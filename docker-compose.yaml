@@ -1,0 +1,38 @@
+version: '3'
+
+services:
+  postgres:
+    image: postgres:13
+    container_name: sharents_client_postgres_db
+    ports:
+      - 4002:5432
+    volumes:
+      - /Users/rajankhadka/Desktop/project/sharentsv1/db/postgres:/var/lib/postgresql/data:rw
+    environment:
+      POSTGRES_PASSWORD: sharents-client-admin
+      POSTGRES_USER: sharents-client-admin
+      POSTGRES_DB: sharents-client-admin
+      PGDATA: /var/lib/postgresql/data/pgdata
+    restart: always
+    networks:
+      - sharents-client
+
+  mongo:
+    image: mongo:5
+    container_name: sharents_client_mongo_db
+    ports:
+      - 4003:27017
+    volumes:
+      - /Users/rajankhadka/Desktop/project/sharentsv1/db/mongo:/data/db:rw
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: sharents-client-admin
+      MONGO_INITDB_ROOT_PASSWORD: sharents-client-admin
+    restart: always
+    networks:
+      - sharents-client
+
+
+networks:
+  sharents-client:
+    name: sharents-client-network
+    driver: bridge
