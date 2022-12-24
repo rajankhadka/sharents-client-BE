@@ -1,0 +1,21 @@
+http:
+  host: "localhost"
+  port: 4000
+
+db:
+  primary:
+    type: "postgres"
+    host: "localhost"
+    port: 4002
+    database: "sh_client"
+    password: "sharents-client-admin"
+    username: "sharents-client-admin"
+    synchronize: false
+    logging: true
+
+client:
+  password:
+    randomByte: 16
+    iteration: 1000
+    keyLan: 64
+    digest: sha512
