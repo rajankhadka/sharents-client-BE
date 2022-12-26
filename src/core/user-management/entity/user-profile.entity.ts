@@ -42,4 +42,12 @@ export class UserProfileEntity extends CommonEntity {
 
   @Column({ type: 'varchar', name: 'password', length: 400, nullable: false })
   password: string;
+
+  @Column({
+    name: 'password_updated_at',
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP',
+    nullable: false,
+  })
+  passwordUpdatedAt: Date;
 }

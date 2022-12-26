@@ -8,6 +8,7 @@ import {
   MaxLength,
   MinLength,
 } from 'class-validator';
+import { IsValidRePassword } from 'src/decorator/check-repassword.decorator';
 
 export class CreateUserProfileDto {
   @IsString()
@@ -60,5 +61,6 @@ export class CreateUserProfileDto {
 
   @IsString()
   @IsNotEmpty()
+  @IsValidRePassword()
   rePassword: string;
 }

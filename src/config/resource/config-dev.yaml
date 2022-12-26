@@ -17,5 +17,6 @@ client:
   password:
     randomByte: 16
     iteration: 1000
-    keyLan: 64
+    keyLen: 64
     digest: sha512
+    secret: b2dad6475df337c5054266f328631849eee7099d20d527e22b72058cae89602e
