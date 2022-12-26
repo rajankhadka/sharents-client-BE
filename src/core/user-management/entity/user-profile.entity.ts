@@ -4,11 +4,11 @@ import { Column, Entity, Index } from 'typeorm';
 @Entity({ name: 'sh_client_user_profile' })
 @Index('user_profile_email_unique_index', ['email'], {
   unique: true,
-  where: 'where (is_deleted is false)',
+  where: '(is_deleted is false)',
 })
 @Index('user_profile_phone_number_unique_index', ['phoneNumber'], {
   unique: true,
-  where: 'where (is_deleted is false)',
+  where: '(is_deleted is false)',
 })
 export class UserProfileEntity extends CommonEntity {
   @Column({ type: 'varchar', name: 'first_name', length: 50, nullable: false })
