@@ -25,4 +25,17 @@ export class UserProfileService {
   async deactivateUserProfile() {}
 
   async deleteUserProfile() {}
+
+  async validateClient(userName: string, password: string) {
+    const fetchClient = await this.userProfileRepository.findOne({
+      where: { userName, isActive: true, isDeleted: false },
+    });
+    if (!fetchClient) throw new Error('no user');
+    const verifyPassword = validateHashedPassword(
+      password,
+      fetchClient.password,
+    );
+    if (!verifyPassword) throw new Error('password doesnot match');
+    return true;
+  }
 }

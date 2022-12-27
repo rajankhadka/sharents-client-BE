@@ -1,5 +1,6 @@
 import { CommonEntity } from 'src/common/entity/common.entity';
-import { Column, Entity, Index } from 'typeorm';
+import { RefreshTokenEntity } from 'src/core/auth/entity/refresh-token.entity';
+import { Column, Entity, Index, OneToMany } from 'typeorm';
 
 @Entity({ name: 'sh_client_user_profile' })
 @Index('user_profile_email_unique_index', ['email'], {

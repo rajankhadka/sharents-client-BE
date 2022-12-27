@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 /* eslint-disable prettier/prettier */
-const { randomBytes } = require('crypto');
+const { randomBytes, randomUUID } = require('crypto');
 
-console.log(randomBytes(32).toString('hex'));
+// console.log(randomBytes(32).toString('hex'));
+console.log(randomUUID())
