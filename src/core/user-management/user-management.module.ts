@@ -8,6 +8,6 @@ import { UserProfileService } from './service/user-profile.service';
   imports: [TypeOrmModule.forFeature([UserProfileRepository])],
   controllers: [UserProfileController],
   providers: [UserProfileService],
-  exports: [],
+  exports: [UserProfileService],
 })
 export class UserManagementModule {}

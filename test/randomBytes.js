@@ -2,5 +2,5 @@
 /* eslint-disable prettier/prettier */
 const { randomBytes, randomUUID } = require('crypto');
 
-// console.log(randomBytes(32).toString('hex'));
-console.log(randomUUID())
+console.log(randomBytes(64).toString('hex'));
+// console.log(randomUUID())
