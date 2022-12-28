@@ -9,3 +9,9 @@ export interface ITokenPayload {
   iat?: Date;
   exp?: Date;
 }
+
+export interface IRefreshTokenPayload {
+  sub: string;
+  iat?: Date;
+  exp?: Date;
+}

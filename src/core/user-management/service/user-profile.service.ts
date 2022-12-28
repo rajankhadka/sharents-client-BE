@@ -24,6 +24,7 @@ export class UserProfileService {
 
   async deactivateUserProfile() {}
 
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   async deleteUserProfile() {}
 
   async validateClient(identifier: string, password: string) {
@@ -39,5 +40,12 @@ export class UserProfileService {
     if (!verifyPassword) return null;
     delete fetchClient.password;
     return fetchClient;
+  }
+
+  async validateAccessToken(id: string) {
+    return await this.userProfileRepository.findOne({
+      where: { id: id },
+      select: ['userName', 'id'],
+    });
   }
 }

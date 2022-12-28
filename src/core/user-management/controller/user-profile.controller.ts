@@ -6,24 +6,25 @@ import {
   Patch,
   Post,
   Put,
-  UseGuards,
+  Req,
 } from '@nestjs/common';
 import { UserProfileService } from '../service/user-profile.service';
 import { CreateUserProfileDto } from '../dto/user-profile.dto';
-import { JwtAuthGuard } from 'src/guard/jwt-auth.guard';
+import { PublicRoute } from 'src/decorator/public-route.decorator';
+import { Request } from 'express';
 
 @Controller('/user-profile')
 export class UserProfileController {
   constructor(private readonly userProfileService: UserProfileService) {}
+  @PublicRoute()
   @Post('/register')
   register(@Body() body: CreateUserProfileDto) {
     return this.userProfileService.register(body);
   }
 
   @Get('/fetch')
-  @UseGuards(JwtAuthGuard)
-  async getUserProfile() {
-    return 'fetch';
+  async getUserProfile(@Req() req: Request) {
+    return req.user;
   }
 
   @Put('/update')

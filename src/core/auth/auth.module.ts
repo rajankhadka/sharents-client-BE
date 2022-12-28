@@ -6,6 +6,7 @@ import { AuthService } from './service/auth.service';
 import { UserManagementModule } from '../user-management/user-management.module';
 import { LocalStrategy } from './strategy/local.strategy';
 import { PassportModule } from '@nestjs/passport';
+import { AccessTokenStrategy } from './strategy/access-token.strategy';
 @Module({
   imports: [
     TypeOrmModule.forFeature([RefreshTokenRepository]),
@@ -13,7 +14,7 @@ import { PassportModule } from '@nestjs/passport';
     PassportModule,
   ],
   controllers: [AuthController],
-  providers: [AuthService, LocalStrategy],
-  exports: [],
+  providers: [AuthService, LocalStrategy, AccessTokenStrategy],
+  exports: [AuthService, AccessTokenStrategy],
 })
 export class AuthModule {}

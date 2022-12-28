@@ -1,17 +1,31 @@
 import { Injectable } from '@nestjs/common';
 import { UserProfileService } from 'src/core/user-management/service/user-profile.service';
 import { LoginDto } from '../dto/auth.dto';
-import { IAuthUser, ITokenPayload } from '../interface/auth.interface';
+import {
+  IAuthUser,
+  IRefreshTokenPayload,
+  ITokenPayload,
+} from '../interface/auth.interface';
 import * as jwt from 'jsonwebtoken';
 import { ConfigService } from '@nestjs/config';
 import { algorithm } from '../../../config/resource/constant.config';
 
 @Injectable()
 export class AuthService {
+  private accessTokenConfig: Record<string, string>;
+  private refreshTokenConfig: Record<string, string>;
   constructor(
     private readonly userProfileService: UserProfileService,
     private readonly configService: ConfigService,
-  ) {}
+  ) {
+    this.accessTokenConfig = this.configService.get<Record<string, string>>(
+      'client.token.accessToken',
+    );
+
+    this.refreshTokenConfig = this.configService.get<Record<string, string>>(
+      'client.token.refreshToken',
+    );
+  }
 
   async validateClient(data: LoginDto) {
     return this.userProfileService.validateClient(
@@ -26,30 +40,35 @@ export class AuthService {
       sub: user.id,
     };
 
-    //to be continue
     return {
       accessToken: await this.accessTokenSign(payload),
-      refreshToken: await this.refreshTokenSign(payload),
+      refreshToken: await this.refreshTokenSign({ sub: user.id }),
     };
   }
 
   async accessTokenSign(payload: ITokenPayload) {
-    const accessTokenConfig = this.configService.get<Record<string, string>>(
-      'client.token.accessToken',
-    );
-    return jwt.sign(payload, accessTokenConfig.secretKey, {
+    return jwt.sign(payload, this.accessTokenConfig.secretKey, {
       algorithm,
-      expiresIn: accessTokenConfig.expireTime,
+      expiresIn: this.accessTokenConfig.expireTime,
     });
   }
 
-  async refreshTokenSign(payload: ITokenPayload) {
-    const refreshTokenConfig = this.configService.get<Record<string, string>>(
-      'client.token.refreshToken',
-    );
-    return jwt.sign(payload, refreshTokenConfig.secretKey, {
+  async refreshTokenSign(payload: IRefreshTokenPayload) {
+    return jwt.sign(payload, this.refreshTokenConfig.secretKey, {
       algorithm,
-      expiresIn: refreshTokenConfig.expireTime,
+      expiresIn: this.refreshTokenConfig.expireTime,
+    });
+  }
+
+  accessTokenVerify(token: string) {
+    return jwt.verify(token, this.accessTokenConfig.secretKey, {
+      algorithms: [algorithm],
+    });
+  }
+
+  refreshTokenVerify(token: string) {
+    return jwt.verify(token, this.refreshTokenConfig.secretKey, {
+      algorithms: [algorithm],
     });
   }
 }
