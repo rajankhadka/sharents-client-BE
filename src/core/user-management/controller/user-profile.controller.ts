@@ -6,9 +6,11 @@ import {
   Patch,
   Post,
   Put,
+  UseGuards,
 } from '@nestjs/common';
 import { UserProfileService } from '../service/user-profile.service';
 import { CreateUserProfileDto } from '../dto/user-profile.dto';
+import { JwtAuthGuard } from 'src/guard/jwt-auth.guard';
 
 @Controller('/user-profile')
 export class UserProfileController {
@@ -19,6 +21,7 @@ export class UserProfileController {
   }
 
   @Get('/fetch')
+  @UseGuards(JwtAuthGuard)
   async getUserProfile() {
     return 'fetch';
   }

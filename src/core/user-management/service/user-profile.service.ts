@@ -29,6 +29,7 @@ export class UserProfileService {
   async validateClient(identifier: string, password: string) {
     const fetchClient = await this.userProfileRepository.findOne({
       where: { userName: identifier, isActive: true, isDeleted: false },
+      select: ['userName', 'password', 'id'],
     });
     if (!fetchClient) return null;
     const verifyPassword = validateHashedPassword(
