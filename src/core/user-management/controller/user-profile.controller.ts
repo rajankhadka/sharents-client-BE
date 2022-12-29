@@ -9,7 +9,11 @@ import {
   Req,
 } from '@nestjs/common';
 import { UserProfileService } from '../service/user-profile.service';
-import { CreateUserProfileDto } from '../dto/user-profile.dto';
+import {
+  CreateUserProfileDto,
+  UpdateUserProfileDto,
+  UpdateUserProfilePasswordDto,
+} from '../dto/user-profile.dto';
 import { PublicRoute } from 'src/decorator/public-route.decorator';
 import { Request } from 'express';
 
@@ -24,17 +28,34 @@ export class UserProfileController {
 
   @Get('/fetch')
   async getUserProfile(@Req() req: Request) {
-    return req.user;
+    return this.userProfileService.getUserProfile({
+      id: req.user['id'],
+      email: req.user['email'],
+    });
   }
 
   @Put('/update')
-  async updateUserProfile() {
-    return 'update';
+  async updateUserProfile(
+    @Body() body: UpdateUserProfileDto,
+    @Req() req: Request,
+  ) {
+    const user = {
+      id: req.user['id'],
+      email: req.user['email'],
+    };
+    return this.userProfileService.updateUserProfile(body, user);
   }
 
   @Patch('/update-password')
-  async updatePassword() {
-    return 'update password';
+  async updatePassword(
+    @Body() body: UpdateUserProfilePasswordDto,
+    @Req() req: Request,
+  ) {
+    const user = {
+      id: req.user['id'],
+      email: req.user['email'],
+    };
+    return this.userProfileService.updatePassword(body, user);
   }
 
   @Delete('/deactivate')

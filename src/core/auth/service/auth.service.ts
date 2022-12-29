@@ -9,6 +9,8 @@ import {
 import * as jwt from 'jsonwebtoken';
 import { ConfigService } from '@nestjs/config';
 import { algorithm } from '../../../config/resource/constant.config';
+import { RefreshTokenRepository } from '../repository/refresh-token.repository';
+import { Transactional } from 'typeorm-transactional-cls-hooked';
 
 @Injectable()
 export class AuthService {
@@ -17,6 +19,7 @@ export class AuthService {
   constructor(
     private readonly userProfileService: UserProfileService,
     private readonly configService: ConfigService,
+    private readonly refreshTokenRepository: RefreshTokenRepository,
   ) {
     this.accessTokenConfig = this.configService.get<Record<string, string>>(
       'client.token.accessToken',
@@ -53,11 +56,22 @@ export class AuthService {
     });
   }
 
+  @Transactional()
   async refreshTokenSign(payload: IRefreshTokenPayload) {
-    return jwt.sign(payload, this.refreshTokenConfig.secretKey, {
+    const refreshToken = jwt.sign(payload, this.refreshTokenConfig.secretKey, {
       algorithm,
       expiresIn: this.refreshTokenConfig.expireTime,
     });
+    await this.refreshTokenRepository.update(
+      { userId: payload.sub, isActive: true, isDeleted: false },
+      { isActive: false },
+    );
+    await this.refreshTokenRepository.save({
+      userId: payload.sub,
+      refreshToken: refreshToken,
+    });
+
+    return refreshToken;
   }
 
   accessTokenVerify(token: string) {
@@ -70,5 +84,49 @@ export class AuthService {
     return jwt.verify(token, this.refreshTokenConfig.secretKey, {
       algorithms: [algorithm],
     });
+  }
+
+  @Transactional()
+  async validateRefreshToken(userId: string, token: string) {
+    const foundToken = await this.refreshTokenRepository.findOne({
+      where: {
+        refreshToken: token,
+        userId: userId,
+        isActive: true,
+        isDeleted: false,
+      },
+      select: ['userId'],
+    });
+    if (!foundToken) {
+      await this.refreshTokenRepository.update({ userId }, { isActive: false });
+      return null;
+    }
+    const foundUser = await this.userProfileService.validateRefreshTokenUser(
+      userId,
+    );
+    if (!foundUser) return null;
+    return foundUser;
+  }
+
+  @Transactional()
+  async generateNewTokenPair(data: any) {
+    await this.refreshTokenRepository.update(
+      { userId: data.id, isActive: true, isDeleted: false },
+      { isActive: false },
+    );
+    const activeUser = await this.userProfileService.getUserProfileById(
+      data.id,
+    );
+    if (!activeUser) return null;
+    const refreshToken = await this.refreshTokenSign({ sub: activeUser.id });
+    const accessToken = await this.accessTokenSign({
+      identifier: activeUser.email,
+      sub: activeUser.id,
+    });
+    console.log("==============end=============")
+    return {
+      accessToken,
+      refreshToken,
+    };
   }
 }

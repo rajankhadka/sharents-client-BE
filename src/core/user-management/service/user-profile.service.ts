@@ -4,7 +4,13 @@ import {
   hashedPassword,
   validateHashedPassword,
 } from 'src/utils/password-hashing.utils';
-import { CreateUserProfileDto } from '../dto/user-profile.dto';
+import {
+  CreateUserProfileDto,
+  UpdateUserProfileDto,
+  UpdateUserProfilePasswordDto,
+} from '../dto/user-profile.dto';
+import { ITokenPayload } from 'src/core/auth/interface/auth.interface';
+import { IAccessTokenData } from 'src/common/interface/token-data.interface';
 
 @Injectable()
 export class UserProfileService {
@@ -16,11 +22,49 @@ export class UserProfileService {
     return {};
   }
 
-  async getUserProfile() {}
+  async getUserProfile(data: IAccessTokenData) {
+    return this.userProfileRepository.getUserProfile(data);
+  }
 
-  async updateUserProfile() {}
+  async foundUserProfile(data: IAccessTokenData) {
+    return await this.userProfileRepository.findOne({
+      where: {
+        id: data.id,
+        email: data.email,
+        isActive: true,
+        isDeleted: false,
+      },
+      select: ['id', 'password'],
+    });
+  }
 
-  async updatePassword() {}
+  async updateUserProfile(data: UpdateUserProfileDto, user: IAccessTokenData) {
+    const foundUser = await this.foundUserProfile(user);
+    if (!foundUser) return {};
+    await this.userProfileRepository.update(
+      { id: user.id, isActive: true, isDeleted: false },
+      { ...data },
+    );
+    return {};
+  }
+
+  async updatePassword(
+    data: UpdateUserProfilePasswordDto,
+    user: IAccessTokenData,
+  ) {
+    const foundUser = await this.foundUserProfile(user);
+    if (!foundUser) return {};
+    delete data.rePassword;
+    if (!validateHashedPassword(data.oldPassword, foundUser.password))
+      return {};
+    data.password = hashedPassword(data.password);
+    delete data.oldPassword;
+    await this.userProfileRepository.update(
+      { id: foundUser.id, isActive: true, isDeleted: false },
+      { password: data.password },
+    );
+    return {};
+  }
 
   async deactivateUserProfile() {}
 
@@ -30,7 +74,7 @@ export class UserProfileService {
   async validateClient(identifier: string, password: string) {
     const fetchClient = await this.userProfileRepository.findOne({
       where: { userName: identifier, isActive: true, isDeleted: false },
-      select: ['userName', 'password', 'id'],
+      select: ['password', 'id', 'email'],
     });
     if (!fetchClient) return null;
     const verifyPassword = validateHashedPassword(
@@ -42,10 +86,24 @@ export class UserProfileService {
     return fetchClient;
   }
 
-  async validateAccessToken(id: string) {
+  async validateAccessToken(id: string, email: string) {
     return await this.userProfileRepository.findOne({
-      where: { id: id },
-      select: ['userName', 'id'],
+      where: { id, email, isActive: true, isDeleted: false },
+      select: ['email', 'id'],
+    });
+  }
+
+  async validateRefreshTokenUser(id: string) {
+    return await this.userProfileRepository.findOne({
+      where: { id, isActive: true, isDeleted: false },
+      select: ['id'],
+    });
+  }
+
+  async getUserProfileById(id: string){
+    return await this.userProfileRepository.findOne({
+      where: { id, isActive: true, isDeleted: false },
+      select: ['id', 'email'],
     });
   }
 }
