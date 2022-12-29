@@ -16,10 +16,13 @@ import {
 } from '../dto/user-profile.dto';
 import { PublicRoute } from 'src/decorator/public-route.decorator';
 import { Request } from 'express';
+import { ApiTagsAndBearer } from 'src/decorator/api-tags-and-bearer.decorator';
 
+@ApiTagsAndBearer('User Profile')
 @Controller('/user-profile')
 export class UserProfileController {
   constructor(private readonly userProfileService: UserProfileService) {}
+
   @PublicRoute()
   @Post('/register')
   register(@Body() body: CreateUserProfileDto) {

@@ -23,7 +23,7 @@ export class AuthGuard implements CanActivate {
 
     const request = context.switchToHttp().getRequest<Request>();
     const header = request.headers.authorization;
-    if (header.length <= 0) return false;
+    if (header?.length <= 0) return false;
     //check for refresh token route
     const isRefreshTokenRoute = this.reflector.getAllAndOverride<boolean>(
       IS_REFRESH_TOKEN_ROUTE,

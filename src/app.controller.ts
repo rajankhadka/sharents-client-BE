@@ -1,6 +1,5 @@
 import { Controller, Get, Req } from '@nestjs/common';
 import { AppService } from './app.service';
-import { ConfigService } from '@nestjs/config';
 import { AuthService } from './core/auth/service/auth.service';
 import { Request } from 'express';
 
@@ -13,7 +12,7 @@ export class AppController {
 
   @Get()
   getHello(@Req() req: Request): string {
-    console.log(req.user);
+    console.log(req?.user);
     return this.appService.getHello();
   }
 }
