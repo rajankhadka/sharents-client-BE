@@ -8,6 +8,7 @@ import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import configuration from './config/configutaion';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import * as cors from 'cors';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -21,6 +22,16 @@ async function bootstrap() {
       whitelist: true,
       transform: true,
       disableErrorMessages: false,
+    }),
+  );
+
+  //maintain cors
+  app.use(
+    cors({
+      origin: '*',
+      methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+      allowedHeaders: ['Content-Type', 'Authorization'],
+      credentials: true,
     }),
   );
 
