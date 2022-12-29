@@ -1,0 +1,14 @@
+version: '3'
+
+services:
+  sharents-client-be:
+    image: sharents-client-be-image
+    container_name: sharents-client-be-container
+    build:
+      context: .
+      dockerfile: staging.dockerfile
+    ports:
+      - 4000:4000
+    volumes:
+      - /sharents-client-be/node_modules
+      - ./:/sharents-client-be:rw
