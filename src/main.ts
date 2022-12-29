@@ -24,6 +24,7 @@ async function bootstrap() {
     }),
   );
 
+  app.setGlobalPrefix('/v0/api');
   //swagger document
   const swaggerConfig = new DocumentBuilder()
     .setTitle('Sharents')
@@ -34,19 +35,10 @@ async function bootstrap() {
     .build();
 
   const document = SwaggerModule.createDocument(app, swaggerConfig);
-  SwaggerModule.setup('/api', app, document);
+  SwaggerModule.setup('/v0/docs', app, document);
+
   await app.listen(config.port, () => {
-    console.log(
-      '===================================================================',
-    );
-    console.log(
-      '============= Application running on %s:%d ===============',
-      config.host,
-      config.port,
-    );
-    console.log(
-      '===================================================================',
-    );
+    console.log('Application running on %s:%d 🚀', config.host, config.port);
   });
 }
 bootstrap();

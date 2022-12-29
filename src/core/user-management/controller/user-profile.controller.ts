@@ -22,6 +22,7 @@ import { ApiTagsAndBearer } from 'src/decorator/api-tags-and-bearer.decorator';
 @Controller('/user-profile')
 export class UserProfileController {
   constructor(private readonly userProfileService: UserProfileService) {}
+
   @PublicRoute()
   @Post('/register')
   register(@Body() body: CreateUserProfileDto) {
