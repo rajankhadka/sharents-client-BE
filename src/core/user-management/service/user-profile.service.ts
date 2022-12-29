@@ -9,7 +9,6 @@ import {
   UpdateUserProfileDto,
   UpdateUserProfilePasswordDto,
 } from '../dto/user-profile.dto';
-import { ITokenPayload } from 'src/core/auth/interface/auth.interface';
 import { IAccessTokenData } from 'src/common/interface/token-data.interface';
 
 @Injectable()
@@ -66,6 +65,7 @@ export class UserProfileService {
     return {};
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   async deactivateUserProfile() {}
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -100,7 +100,7 @@ export class UserProfileService {
     });
   }
 
-  async getUserProfileById(id: string){
+  async getUserProfileById(id: string) {
     return await this.userProfileRepository.findOne({
       where: { id, isActive: true, isDeleted: false },
       select: ['id', 'email'],

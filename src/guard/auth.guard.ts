@@ -30,7 +30,7 @@ export class AuthGuard implements CanActivate {
       [context.getHandler(), context.getClass()],
     );
     if (isRefreshTokenRoute) {
-      console.log("===================start===========");
+      console.log('===================start===========');
       const payload = await this.refreshTokenValidate(header);
       if (!payload) return null;
       //set refresh token payload;
