@@ -7,6 +7,7 @@ import {
 import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import configuration from './config/configutaion';
+import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -22,6 +23,18 @@ async function bootstrap() {
       disableErrorMessages: false,
     }),
   );
+
+  //swagger document
+  const swaggerConfig = new DocumentBuilder()
+    .setTitle('Sharents')
+    .setDescription("Let's share")
+    .setVersion('0.1')
+    .addTag('sharents')
+    .addBearerAuth()
+    .build();
+
+  const document = SwaggerModule.createDocument(app, swaggerConfig);
+  SwaggerModule.setup('/api', app, document);
   await app.listen(config.port, () => {
     console.log(
       '===================================================================',
