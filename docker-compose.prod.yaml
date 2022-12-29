@@ -6,9 +6,9 @@ services:
     container_name: sharents-client-be-container
     build:
       context: .
-      dockerfile: staging.dockerfile
+      dockerfile: prod.dockerfile
     ports:
       - 4000:4000
     # volumes:
-    #   - /sharents-client-be/node_modules
-    #   - ./:/sharents-client-be:rw
+      # - /sharents-client-be/node_modules
+      # - ./:/sharents-client-be:rw
