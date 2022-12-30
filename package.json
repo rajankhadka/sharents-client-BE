@@ -14,7 +14,7 @@
     "build": "npm run prebuild && nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
-    "start:local": "rimraf dist && nest start --watch",
+    "start:local": "rimraf dist && nest start --watch --debug",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/src/main",

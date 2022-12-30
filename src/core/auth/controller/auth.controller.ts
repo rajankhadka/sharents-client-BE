@@ -1,6 +1,14 @@
-import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Req,
+  Res,
+  UseGuards,
+} from '@nestjs/common';
 import { LocalAuthGuard } from 'src/guard/local-auth.guard';
-import { Request } from 'express';
+import { Request, Response } from 'express';
 import { AuthService } from '../service/auth.service';
 import { PublicRoute } from 'src/decorator/public-route.decorator';
 import { RefreshTokenRoute } from 'src/decorator/refresh-token-route.decorator';
@@ -24,9 +32,11 @@ export class AuthController {
 
   @RefreshTokenRoute()
   @Get('/new-token-pair')
-  async generateNewTokenPair(@Req() req: Request) {
-    return await this.authService.generateNewTokenPair({
-      id: req.user['id'].toString(),
-    });
+  async generateNewTokenPair(@Req() req: Request, @Res() res: Response) {
+    res.send(
+      await this.authService.generateNewTokenPair({
+        id: req.user['id'].toString(),
+      }),
+    );
   }
 }

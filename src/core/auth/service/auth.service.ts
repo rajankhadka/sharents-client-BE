@@ -43,6 +43,10 @@ export class AuthService {
       sub: user.id,
     };
 
+    await this.refreshTokenRepository.delete({
+      userId: user.id,
+      isActive: true,
+    });
     return {
       accessToken: await this.accessTokenSign(payload),
       refreshToken: await this.refreshTokenSign({ sub: user.id }),
@@ -56,21 +60,15 @@ export class AuthService {
     });
   }
 
-  @Transactional()
   async refreshTokenSign(payload: IRefreshTokenPayload) {
     const refreshToken = jwt.sign(payload, this.refreshTokenConfig.secretKey, {
       algorithm,
       expiresIn: this.refreshTokenConfig.expireTime,
     });
-    await this.refreshTokenRepository.update(
-      { userId: payload.sub, isActive: true, isDeleted: false },
-      { isActive: false },
-    );
     await this.refreshTokenRepository.save({
       userId: payload.sub,
       refreshToken: refreshToken,
     });
-
     return refreshToken;
   }
 
@@ -97,23 +95,13 @@ export class AuthService {
       },
       select: ['userId'],
     });
-    if (!foundToken) {
-      await this.refreshTokenRepository.update({ userId }, { isActive: false });
-      return null;
-    }
-    const foundUser = await this.userProfileService.validateRefreshTokenUser(
-      userId,
-    );
-    if (!foundUser) return null;
-    return foundUser;
+    await this.refreshTokenRepository.delete({ userId, isActive: true });
+    if (!foundToken) return null;
+    return { id: foundToken.userId };
   }
 
   @Transactional()
   async generateNewTokenPair(data: any) {
-    await this.refreshTokenRepository.update(
-      { userId: data.id, isActive: true, isDeleted: false },
-      { isActive: false },
-    );
     const activeUser = await this.userProfileService.getUserProfileById(
       data.id,
     );
@@ -123,7 +111,7 @@ export class AuthService {
       identifier: activeUser.email,
       sub: activeUser.id,
     });
-    console.log("==============end=============")
+    console.log('==============end============');
     return {
       accessToken,
       refreshToken,
