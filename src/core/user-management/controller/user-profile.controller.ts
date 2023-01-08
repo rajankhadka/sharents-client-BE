@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  HttpStatus,
   Patch,
   Post,
   Put,
@@ -17,18 +18,21 @@ import {
 import { PublicRoute } from 'src/decorator/public-route.decorator';
 import { Request } from 'express';
 import { ApiTagsAndBearer } from 'src/decorator/api-tags-and-bearer.decorator';
+import { ResponseMessage } from 'src/decorator/response.decorator';
 
 @ApiTagsAndBearer('User Profile')
 @Controller('/user-profile')
 export class UserProfileController {
   constructor(private readonly userProfileService: UserProfileService) {}
 
+  @ResponseMessage('register', 'register', HttpStatus.CREATED)
   @PublicRoute()
   @Post('/register')
   register(@Body() body: CreateUserProfileDto) {
     return this.userProfileService.register(body);
   }
 
+  @ResponseMessage('user profile', 'fetch', HttpStatus.OK)
   @Get('/fetch')
   async getUserProfile(@Req() req: Request) {
     return this.userProfileService.getUserProfile({
@@ -37,6 +41,7 @@ export class UserProfileController {
     });
   }
 
+  @ResponseMessage('user profile', 'updateUserProfile', HttpStatus.OK)
   @Put('/update')
   async updateUserProfile(
     @Body() body: UpdateUserProfileDto,
@@ -49,6 +54,7 @@ export class UserProfileController {
     return this.userProfileService.updateUserProfile(body, user);
   }
 
+  @ResponseMessage('user profile', 'updatePassword', HttpStatus.OK)
   @Patch('/update-password')
   async updatePassword(
     @Body() body: UpdateUserProfilePasswordDto,
@@ -61,11 +67,13 @@ export class UserProfileController {
     return this.userProfileService.updatePassword(body, user);
   }
 
+  @ResponseMessage('user profile', 'deactivate', HttpStatus.OK)
   @Delete('/deactivate')
   async deactivateUserProfile() {
     return 'deactivate';
   }
 
+  @ResponseMessage('user profile', 'userProfileDeleted', HttpStatus.OK)
   @Delete('/delete')
   async deleteUserProfile() {
     return 'delete';
