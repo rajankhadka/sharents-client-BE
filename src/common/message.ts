@@ -8,3 +8,9 @@ export const SuccessMessage = {
   deactivate: '%s deactivated successfully',
   userProfileDeleted: '%s deleted successfully',
 };
+
+export const ErrorMessage = {
+  TokenExpiredError: 'Token has been expired',
+  UnauthorizedException: 'Client unauthorized',
+  NotFoundException: 'Client request cannot be found',
+}
