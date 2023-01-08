@@ -1,6 +1,7 @@
 import { ConfigService } from '@nestjs/config';
 import { pbkdf2Sync } from 'crypto';
 import configuration from '../config/configutaion';
+import { RunTimeException } from 'src/exception/run-time.exception';
 
 export function hashedPassword(password: string) {
   const configurationService = new ConfigService(configuration());
@@ -8,7 +9,7 @@ export function hashedPassword(password: string) {
     configurationService.get<Record<string, any>>('client.password');
 
   if (!Object.keys(passwordConfig).length)
-    throw new Error('cannot load env file');
+    throw new RunTimeException('cannot load env file');
 
   return pbkdf2Sync(
     password,
@@ -28,7 +29,7 @@ export function validateHashedPassword(
     configurationService.get<Record<string, any>>('client.password');
 
   if (!Object.keys(passwordConfig).length)
-    throw new Error('cannot load env file');
+    throw new RunTimeException('cannot load env file');
 
   const password = pbkdf2Sync(
     plainPassword,
