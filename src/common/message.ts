@@ -7,10 +7,11 @@ export const SuccessMessage = {
   updateUserProfile: '%s updated successfully',
   deactivate: '%s deactivated successfully',
   userProfileDeleted: '%s deleted successfully',
+  uploadProfile: '%s uploaded successfully',
 };
 
 export const ErrorMessage = {
   TokenExpiredError: 'Token has been expired',
   UnauthorizedException: 'Client unauthorized',
   NotFoundException: 'Client request cannot be found',
-}
+};
