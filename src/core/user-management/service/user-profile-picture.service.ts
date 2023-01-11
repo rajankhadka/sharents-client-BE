@@ -55,23 +55,13 @@ export class UserProfilePictureService {
   }
 
   async fetchProfilePicture(userInfo: IUserInfo) {
-    const _fetchData = await this.userProfilePictureRepository.query(
-      `
-            select
-                concat(file_path, '/',file_name) as "filePath",
-                file_name as "fileName"
-            from sh_client_user_profile_picture
-            where user_profile_id = $1 and
-                is_active is true and is_deleted is false;
-        `,
-      [userInfo.id],
-    );
-    if (!_fetchData.length) return {};
-    const fetchData = _fetchData[0];
-    const file = readFile(fetchData.filePath);
+    const fetchData =
+      await this.userProfilePictureRepository.fetchProfilePicture(userInfo.id);
+    if (!Object.keys(fetchData).length) return {};
+    const file = await readFile(fetchData.filePath);
     if (!file) return {};
     return {
-      file,
+      file: file,
       fileName: fetchData.fileName,
     };
   }
@@ -86,6 +76,7 @@ export class UserProfilePictureService {
       },
       { isActive: false },
     );
+    return {};
   }
 
   async fetchActiveProfilePicture(userId: string) {

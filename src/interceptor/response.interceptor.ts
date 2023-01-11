@@ -33,13 +33,15 @@ export class ResponseInterceptor implements NestInterceptor {
     const statusCode = status ?? HttpStatus.OK;
     return next.handle().pipe(
       map((data) => {
-        res.json({
+        res.status(statusCode);
+        // res.json();
+        return {
           message: responseMessage,
           success: true,
           data: data,
           statusCode,
           error: null,
-        });
+        };
       }),
     );
   }

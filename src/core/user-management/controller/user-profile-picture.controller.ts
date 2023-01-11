@@ -8,6 +8,7 @@ import {
   Req,
   UploadedFile,
   UseInterceptors,
+  Header,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiTagsAndBearer } from 'src/decorator/api-tags-and-bearer.decorator';
@@ -71,6 +72,8 @@ export class UserProfilePictureController {
    * fetch profile picture when account is actived and not deleted
    */
   @ResponseMessage('profile picture', 'fetch', HttpStatus.OK)
+  // @Header('Content-Type', 'application/json')
+  // @Header('Cache-Control', 'none')
   @Get('/fetch')
   async fetchProfilePicture(@Req() req: Request) {
     return this.userProfilePictureService.fetchProfilePicture({

@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  Header,
   HttpStatus,
   Patch,
   Post,
@@ -34,7 +35,7 @@ export class UserProfileController {
 
   @ResponseMessage('user profile', 'fetch', HttpStatus.OK)
   @Get('/fetch')
-  async getUserProfile(@Req() req: Request) {
+  getUserProfile(@Req() req: Request) {
     return this.userProfileService.getUserProfile({
       id: req.user['id'],
       email: req.user['email'],

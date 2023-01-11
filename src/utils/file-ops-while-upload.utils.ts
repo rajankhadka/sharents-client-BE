@@ -1,4 +1,5 @@
 import * as fs from 'fs';
+import * as fsPromise from 'fs/promises';
 /**
  * remove file aka file or image while its single file
  */
@@ -7,8 +8,7 @@ export function removeFile(path: string) {
   fs.rmSync(path, { recursive: true });
 }
 
-export function readFile(path: string) {
+export async function readFile(path: string) {
   if (!fs.existsSync(path)) return null;
-  return fs.readFileSync(path, { encoding: 'base64' });
+  return await fsPromise.readFile(path, { encoding: 'base64' });
 }
-
