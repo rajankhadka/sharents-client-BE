@@ -4,11 +4,18 @@ import { UserProfilePictureController } from './controller/user-profile-picture.
 import { UserProfileController } from './controller/user-profile.controller';
 import { UserProfileRepository } from './repository/user-profile.repository';
 import { UserProfileService } from './service/user-profile.service';
+import { UserProfilePictureService } from './service/user-profile-picture.service';
+import { UserProfilePictureRepository } from './repository/user-profile-picture.repository';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([UserProfileRepository])],
+  imports: [
+    TypeOrmModule.forFeature([
+      UserProfileRepository,
+      UserProfilePictureRepository,
+    ]),
+  ],
   controllers: [UserProfileController, UserProfilePictureController],
-  providers: [UserProfileService],
+  providers: [UserProfileService, UserProfilePictureService],
   exports: [UserProfileService],
 })
 export class UserManagementModule {}

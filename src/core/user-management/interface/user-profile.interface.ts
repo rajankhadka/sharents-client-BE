@@ -7,3 +7,8 @@ export interface ICreateUserProfile {
   password: string;
   rePassword: string;
 }
+
+export interface IUserInfo {
+  email: string;
+  id: string;
+}

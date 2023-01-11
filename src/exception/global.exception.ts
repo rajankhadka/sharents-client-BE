@@ -10,8 +10,10 @@ import { RunTimeException } from './run-time.exception';
 import { ErrorMessage } from 'src/common/message';
 import {
   NotFoundException,
+  PayloadTooLargeException,
   UnauthorizedException,
 } from '@nestjs/common/exceptions';
+import { FileMulterException } from './file-multer.exception';
 
 interface IErrorResponse {
   data: null;
@@ -20,7 +22,6 @@ interface IErrorResponse {
   message: string;
   error: string;
 }
-
 @Catch()
 export class GlobalExceptionFilter implements ExceptionFilter {
   constructor(private readonly httpAdapter: HttpAdapterHost) {}
@@ -33,8 +34,9 @@ export class GlobalExceptionFilter implements ExceptionFilter {
       success: false,
     } as IErrorResponse;
     //get error status code
-    responseBody['statusCode'] =
-      exception?.getStatus() || HttpStatus.INTERNAL_SERVER_ERROR;
+    responseBody['statusCode'] = exception?.getStatus
+      ? exception?.getStatus()
+      : HttpStatus.INTERNAL_SERVER_ERROR;
     //check for Exception class
 
     if (exception instanceof TokenExpiredError) {
@@ -45,6 +47,12 @@ export class GlobalExceptionFilter implements ExceptionFilter {
       responseBody['error'] = exception.name;
     } else if (exception instanceof NotFoundException) {
       responseBody['message'] = ErrorMessage[exception.name];
+      responseBody['error'] = exception.name;
+    } else if (exception instanceof PayloadTooLargeException) {
+      responseBody['message'] = ErrorMessage[exception.name];
+      responseBody['error'] = exception.name;
+    } else if (exception instanceof FileMulterException) {
+      responseBody['message'] = exception.getResponse().toString();
       responseBody['error'] = exception.name;
     } else if (exception instanceof RunTimeException) {
       responseBody['message'] = exception.getResponse().toString();

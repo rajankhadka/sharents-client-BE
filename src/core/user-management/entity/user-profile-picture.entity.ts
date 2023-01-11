@@ -42,4 +42,7 @@ export class UserProfilePictureEntity extends CommonEntity {
   @ManyToOne(() => UserProfileEntity)
   @JoinColumn({ name: 'user_profile_id', referencedColumnName: 'id' })
   userProfile: UserProfileEntity;
+
+  @Column({ type: 'uuid', name: 'user_profile_id', nullable: false })
+  userProfileId: string;
 }
