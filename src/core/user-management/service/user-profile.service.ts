@@ -10,6 +10,7 @@ import {
   UpdateUserProfilePasswordDto,
 } from '../dto/user-profile.dto';
 import { IAccessTokenData } from 'src/common/interface/token-data.interface';
+import { readFile } from 'src/utils/file-ops-while-upload.utils';
 
 @Injectable()
 export class UserProfileService {
@@ -22,7 +23,19 @@ export class UserProfileService {
   }
 
   async getUserProfile(data: IAccessTokenData) {
-    return this.userProfileRepository.getUserProfile(data);
+    const fetchUser = await this.userProfileRepository.getUserProfile(data);
+    // let responseData = {};
+    if (!fetchUser) return {};
+    if (!Object.keys(fetchUser.profilePicture).length) return fetchUser;
+    const file = await readFile(fetchUser.profilePicture.filePath);
+    if (!file) {
+      fetchUser.profilePicture = {};
+    } else {
+      delete fetchUser.profilePicture.filePath;
+      fetchUser.profilePicture['file'] = file;
+    }
+
+    return fetchUser;
   }
 
   async foundUserProfile(data: IAccessTokenData) {

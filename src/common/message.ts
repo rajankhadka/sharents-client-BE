@@ -6,11 +6,15 @@ export const SuccessMessage = {
   updatePassword: '%s password updated successfully',
   updateUserProfile: '%s updated successfully',
   deactivate: '%s deactivated successfully',
+  remove: '%s removed successfully',
   userProfileDeleted: '%s deleted successfully',
+  uploadProfile: '%s uploaded successfully',
+  updateProfilePicture: '%s updated successfully',
 };
 
 export const ErrorMessage = {
   TokenExpiredError: 'Token has been expired',
   UnauthorizedException: 'Client unauthorized',
   NotFoundException: 'Client request cannot be found',
-}
+  PayloadTooLargeException: 'Uploaded file size exceed',
+};
