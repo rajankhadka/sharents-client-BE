@@ -7,6 +7,14 @@ export class RefreshTokenEntity extends CommonEntity {
   @Column({ name: 'refresh_token', type: 'varchar', nullable: false })
   refreshToken: string;
 
+  @Column({
+    name: 'identification',
+    type: 'varchar',
+    length: 70,
+    nullable: false,
+  })
+  identification: string;
+
   @ManyToOne(() => UserProfileEntity)
   @JoinColumn({ name: 'user_id', referencedColumnName: 'id' })
   user: UserProfileEntity;

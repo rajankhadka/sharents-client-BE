@@ -24,7 +24,7 @@ import { importAllFilesFromFolder } from 'src/utils/read-all-module.utils';
           entities: [...importAllFilesFromFolder(ISearchParams.ENTITY)],
           synchronize: Boolean(primaryDataSource.synchronize),
           logging: Boolean(primaryDataSource.logging),
-          subscribers: [GlobalTypeormSubscriber],
+          subscribers: [],
         };
       },
     }),

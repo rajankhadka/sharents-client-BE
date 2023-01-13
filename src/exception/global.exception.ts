@@ -12,6 +12,7 @@ import {
   NotFoundException,
   PayloadTooLargeException,
   UnauthorizedException,
+  ForbiddenException,
 } from '@nestjs/common/exceptions';
 import { FileMulterException } from './file-multer.exception';
 
@@ -52,6 +53,9 @@ export class GlobalExceptionFilter implements ExceptionFilter {
       responseBody['message'] = ErrorMessage[exception.name];
       responseBody['error'] = exception.name;
     } else if (exception instanceof FileMulterException) {
+      responseBody['message'] = exception.getResponse().toString();
+      responseBody['error'] = exception.name;
+    } else if (exception instanceof ForbiddenException) {
       responseBody['message'] = exception.getResponse().toString();
       responseBody['error'] = exception.name;
     } else if (exception instanceof RunTimeException) {

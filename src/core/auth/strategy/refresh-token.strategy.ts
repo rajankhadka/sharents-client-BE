@@ -28,6 +28,7 @@ export class RefreshTokenStrategy {
     const validatePayload = await this.authService.validateRefreshToken(
       payload['sub'].toString(),
       token,
+      payload['identification'].toString(),
     );
     if (!validatePayload) return null;
     return validatePayload;
