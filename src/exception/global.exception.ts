@@ -5,15 +5,17 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { HttpAdapterHost } from '@nestjs/core';
-import { TokenExpiredError } from 'jsonwebtoken';
+import { JsonWebTokenError, TokenExpiredError } from 'jsonwebtoken';
 import { RunTimeException } from './run-time.exception';
 import { ErrorMessage } from 'src/common/message';
 import {
   NotFoundException,
   PayloadTooLargeException,
   UnauthorizedException,
+  ForbiddenException,
 } from '@nestjs/common/exceptions';
 import { FileMulterException } from './file-multer.exception';
+import { RequestCannotPerform } from './request-cannot-perform.exception';
 
 interface IErrorResponse {
   data: null;
@@ -39,7 +41,10 @@ export class GlobalExceptionFilter implements ExceptionFilter {
       : HttpStatus.INTERNAL_SERVER_ERROR;
     //check for Exception class
 
-    if (exception instanceof TokenExpiredError) {
+    if (
+      exception instanceof TokenExpiredError ||
+      exception instanceof JsonWebTokenError
+    ) {
       responseBody['message'] = ErrorMessage[exception.name];
       responseBody['error'] = exception.name;
     } else if (exception instanceof UnauthorizedException) {
@@ -52,6 +57,12 @@ export class GlobalExceptionFilter implements ExceptionFilter {
       responseBody['message'] = ErrorMessage[exception.name];
       responseBody['error'] = exception.name;
     } else if (exception instanceof FileMulterException) {
+      responseBody['message'] = exception.getResponse().toString();
+      responseBody['error'] = exception.name;
+    } else if (exception instanceof ForbiddenException) {
+      responseBody['message'] = exception.getResponse().toString();
+      responseBody['error'] = exception.name;
+    } else if (exception instanceof RequestCannotPerform) {
       responseBody['message'] = exception.getResponse().toString();
       responseBody['error'] = exception.name;
     } else if (exception instanceof RunTimeException) {

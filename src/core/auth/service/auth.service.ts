@@ -11,7 +11,8 @@ import { ConfigService } from '@nestjs/config';
 import { algorithm } from '../../../config/resource/constant.config';
 import { RefreshTokenRepository } from '../repository/refresh-token.repository';
 import { Transactional } from 'typeorm-transactional-cls-hooked';
-
+import { randomBytes } from 'crypto';
+import { RequestCannotPerform } from 'src/exception/request-cannot-perform.exception';
 @Injectable()
 export class AuthService {
   private accessTokenConfig: Record<string, string>;
@@ -43,13 +44,18 @@ export class AuthService {
       sub: user.id,
     };
 
-    await this.refreshTokenRepository.delete({
-      userId: user.id,
-      isActive: true,
-    });
+    // await this.refreshTokenRepository.delete({
+    //   userId: user.id,
+    //   isActive: true,
+    // });
+    //generate new identification token
+    const identification = randomBytes(32).toString('hex');
     return {
       accessToken: await this.accessTokenSign(payload),
-      refreshToken: await this.refreshTokenSign({ sub: user.id }),
+      refreshToken: await this.refreshTokenSign({
+        sub: user.id,
+        identification,
+      }),
     };
   }
 
@@ -68,6 +74,7 @@ export class AuthService {
     await this.refreshTokenRepository.save({
       userId: payload.sub,
       refreshToken: refreshToken,
+      identification: payload.identification,
     });
     return refreshToken;
   }
@@ -85,19 +92,28 @@ export class AuthService {
   }
 
   @Transactional()
-  async validateRefreshToken(userId: string, token: string) {
+  async validateRefreshToken(
+    userId: string,
+    token: string,
+    identification: string,
+  ) {
     const foundToken = await this.refreshTokenRepository.findOne({
       where: {
         refreshToken: token,
         userId: userId,
         isActive: true,
         isDeleted: false,
+        identification,
       },
-      select: ['userId'],
+      select: ['userId', 'identification'],
     });
-    await this.refreshTokenRepository.delete({ userId, isActive: true });
+    await this.refreshTokenRepository.delete({
+      userId,
+      isActive: true,
+      identification,
+    });
     if (!foundToken) return null;
-    return { id: foundToken.userId };
+    return { id: foundToken.userId, identification };
   }
 
   @Transactional()
@@ -106,7 +122,10 @@ export class AuthService {
       data.id,
     );
     if (!activeUser) return null;
-    const refreshToken = await this.refreshTokenSign({ sub: activeUser.id });
+    const refreshToken = await this.refreshTokenSign({
+      sub: activeUser.id,
+      identification: data.identification,
+    });
     const accessToken = await this.accessTokenSign({
       identifier: activeUser.email,
       sub: activeUser.id,

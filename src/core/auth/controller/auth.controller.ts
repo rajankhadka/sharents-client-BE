@@ -36,9 +36,10 @@ export class AuthController {
   @ResponseMessage('new autheticated token', 'newToken', HttpStatus.OK)
   @RefreshTokenRoute()
   @Get('/new-token-pair')
-  async generateNewTokenPair(@Req() req: Request, @Res() res: Response) {
+  async generateNewTokenPair(@Req() req: Request) {
     return this.authService.generateNewTokenPair({
       id: req.user['id'].toString(),
+      identification: req.user['identification'].toString(),
     });
   }
 }

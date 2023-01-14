@@ -14,6 +14,7 @@ export const SuccessMessage = {
 
 export const ErrorMessage = {
   TokenExpiredError: 'Token has been expired',
+  JsonWebTokenError: 'Token has been expired',
   UnauthorizedException: 'Client unauthorized',
   NotFoundException: 'Client request cannot be found',
   PayloadTooLargeException: 'Uploaded file size exceed',
