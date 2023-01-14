@@ -18,7 +18,6 @@ export class AccessTokenStrategy {
   }
 
   async validateToken(header: string) {
-    if (!header) return null;
     const _headerSplit = header.split(' ');
     if (_headerSplit.length > 2) return null;
     if (_headerSplit[0].toLocaleLowerCase() !== 'bearer') return null;
