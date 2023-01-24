@@ -23,7 +23,7 @@ export class AppController {
     await this.rabbitmq.publishMessage(
       'client-exchange',
       RABBITMQROUTE.MAILROUTE,
-      Buffer.from(JSON.stringify("rajan")),
+      Buffer.from(JSON.stringify({route: 'mail-route', payload: "this is new mail"})),
     );
     // for(let i =0;i<1;i++){
       
