@@ -6,6 +6,7 @@ import {
   RABBITMQEXCHANGE,
   RABBITMQROUTE,
 } from 'src/common/interface/rabbimq.interface';
+import { messageEncryption } from 'src/utils/message-encryption.utils';
 
 @Injectable()
 export class RabbitmqService {
@@ -38,7 +39,8 @@ export class RabbitmqService {
     msg: Buffer,
   ) {
     const { channel, connection } = await this.setup();
-    await Promise.all([channel.publish(exchange, routingKey, msg)]);
+    const data = messageEncryption(msg);
+    await Promise.all([channel.publish(exchange, routingKey, data)]);
     await channel.close();
     await connection.close();
   }

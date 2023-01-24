@@ -20,10 +20,10 @@ export class AppController {
   @Get()
   async getHello(@Req() req: Request) {
     
-    this.rabbitmq.publishMessage(
+    await this.rabbitmq.publishMessage(
       'client-exchange',
       RABBITMQROUTE.MAILROUTE,
-      Buffer.from('rajan'),
+      Buffer.from(JSON.stringify("rajan")),
     );
     // for(let i =0;i<1;i++){
       
