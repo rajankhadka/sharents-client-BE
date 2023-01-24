@@ -9,6 +9,7 @@ import { APP_GUARD, APP_INTERCEPTOR, APP_FILTER } from '@nestjs/core';
 import { AuthGuard } from './guard/auth.guard';
 import { ResponseInterceptor } from './interceptor/response.interceptor';
 import { GlobalExceptionFilter } from './exception/global.exception';
+import { RabbitmqService } from './lib/rabbitmq.service';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { GlobalExceptionFilter } from './exception/global.exception';
   controllers: [AppController],
   providers: [
     AppService,
+    RabbitmqService,
     { provide: APP_GUARD, useClass: AuthGuard },
     { provide: APP_INTERCEPTOR, useClass: ResponseInterceptor },
     { provide: APP_FILTER, useClass: GlobalExceptionFilter },
