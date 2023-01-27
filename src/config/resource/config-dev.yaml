@@ -30,3 +30,16 @@ client:
       secretKey: e8c7e1196951096463360e3b53e0e191fb6eec2a6e01e2999fdbdf99a84c982ac3ddc9c5c4627114ebebb1b20ed34eab1fc07f1b0ba6e99be115dfde43a4f741
       expireTime: "1d"
 
+queue:
+  rabbitmq:
+    rabbitmqUser: sharents
+    rabbitmqPass: sharents
+    rabbitmqVhost: client
+    rabbitmqPort: 5672
+    rabbitmqHost: 192.168.0.2
+    # rabbitmqExchange: client-exchange
+    # rabbitmqRoute:
+    #   mail: mail-route
+    #   phone: phone-route
+
+
