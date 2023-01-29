@@ -118,3 +118,11 @@ export class UpdateUserProfilePasswordDto {
   @IsValidRePassword()
   rePassword: string;
 }
+
+export class ForgetPasswordDto {
+  @IsString()
+  @IsNotEmpty()
+  @MaxLength(25)
+  @MinLength(3)
+  identifier: string;
+}

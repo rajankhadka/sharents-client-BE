@@ -10,6 +10,8 @@ export const SuccessMessage = {
   userProfileDeleted: '%s deleted successfully',
   uploadProfile: '%s uploaded successfully',
   updateProfilePicture: '%s updated successfully',
+  userProfileForgetPasswordOtp:
+    '%s otp for forget password generated successfully',
 };
 
 export const ErrorMessage = {

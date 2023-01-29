@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { UserProfileRepository } from '../repository/user-profile.repository';
 import {
   hashedPassword,
@@ -6,15 +6,21 @@ import {
 } from 'src/utils/password-hashing.utils';
 import {
   CreateUserProfileDto,
+  ForgetPasswordDto,
   UpdateUserProfileDto,
   UpdateUserProfilePasswordDto,
 } from '../dto/user-profile.dto';
 import { IAccessTokenData } from 'src/common/interface/token-data.interface';
 import { readFile } from 'src/utils/file-ops-while-upload.utils';
+import { OtpService } from 'src/core/feature/otp/otp.service';
+import { EOTPTYPE } from 'src/core/feature/otp/otp.dto';
 
 @Injectable()
 export class UserProfileService {
-  constructor(private readonly userProfileRepository: UserProfileRepository) {}
+  constructor(
+    private readonly userProfileRepository: UserProfileRepository,
+    private readonly otpService: OtpService,
+  ) {}
   async register(data: CreateUserProfileDto) {
     delete data.rePassword;
     data.password = hashedPassword(data.password);
@@ -116,5 +122,18 @@ export class UserProfileService {
       where: { id, isActive: true, isDeleted: false },
       select: ['id', 'email'],
     });
+  }
+
+  async otpForForgetPassword(data: ForgetPasswordDto) {
+    const fetchUser =
+      await this.userProfileRepository.getUserIdByEmailOrUsernameOrPhone(
+        data.identifier,
+      );
+    if (!fetchUser) throw new UnauthorizedException();
+
+    return await this.otpService.newOtpForForgetPassword(
+      fetchUser.id,
+      EOTPTYPE.FORGET_PASSWORD,
+    );
   }
 }
