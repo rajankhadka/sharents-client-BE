@@ -17,4 +17,11 @@ export class OtpEntity extends CommonEntity {
 
   @Column({ name: 'user_id', type: 'uuid', nullable: false })
   userId: string;
+
+  @Column({
+    name: 'expire_at',
+    type: 'timestamp',
+    nullable: false,
+  })
+  expireAt: Date;
 }

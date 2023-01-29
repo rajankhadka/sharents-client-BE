@@ -3,7 +3,6 @@ import {
   Controller,
   Delete,
   Get,
-  Header,
   HttpStatus,
   Patch,
   Post,
@@ -13,6 +12,7 @@ import {
 import { UserProfileService } from '../service/user-profile.service';
 import {
   CreateUserProfileDto,
+  ForgetPasswordDto,
   UpdateUserProfileDto,
   UpdateUserProfilePasswordDto,
 } from '../dto/user-profile.dto';
@@ -78,5 +78,19 @@ export class UserProfileController {
   @Delete('/delete')
   async deleteUserProfile() {
     return 'delete';
+  }
+
+  /**
+   * otp generation for forget password
+   */
+  @PublicRoute()
+  @ResponseMessage(
+    'user profile',
+    'userProfileForgetPasswordOtp',
+    HttpStatus.OK,
+  )
+  @Post('/forget-password/otp')
+  async otpForForgetPassword(@Body() body: ForgetPasswordDto) {
+    return this.userProfileService.otpForForgetPassword(body);
   }
 }

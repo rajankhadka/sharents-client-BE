@@ -7,3 +7,9 @@ export interface IOTP {
   otp: string;
   type: EOTPTYPE;
 }
+
+export class VerifyOtp {
+  identifier: string;
+  type: EOTPTYPE;
+  otp: string;
+}

@@ -49,4 +49,19 @@ export class UserProfileRepository extends BaseRepository<UserProfileEntity> {
     );
     return fetchData.length ? fetchData[0] : null;
   }
+
+  async getUserIdByEmailOrUsernameOrPhone(identifier: string) {
+    const fetchData = await this.query(
+      `
+        select id from sh_client_user_profile
+        where user_name = $1 or 
+              email = $1 or 
+              phone_number = $1 and
+              (is_active is true and is_deleted is false)
+        limit 1;
+      `,
+      [identifier],
+    );
+    return fetchData.length ? fetchData[0] : null;
+  }
 }

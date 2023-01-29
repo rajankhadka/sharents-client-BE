@@ -35,6 +35,11 @@ export class GlobalExceptionFilter implements ExceptionFilter {
       data: null,
       success: false,
     } as IErrorResponse;
+
+    responseBody['data'] = exception?.response
+      ? exception?.getResponse()?.message
+      : null;
+
     //get error status code
     responseBody['statusCode'] = exception?.getStatus
       ? exception?.getStatus()
