@@ -9,11 +9,14 @@ import { ConfigService } from '@nestjs/config';
 import configuration from './config/configutaion';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import * as cors from 'cors';
+import * as session from 'express-session';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const configService = new ConfigService(configuration());
   const config = configService.get<Record<string, any>>('http');
+  const sessionConfig =
+    configService.get<Record<string, any>>('client.session');
 
   initializeTransactionalContext(); // Initialize cls-hooked
   patchTypeORMRepositoryWithBaseRepository();
@@ -32,6 +35,16 @@ async function bootstrap() {
       methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
       allowedHeaders: ['Content-Type', 'Authorization'],
       credentials: true,
+    }),
+  );
+
+  //session initalized
+  app.use(
+    session({
+      secret: sessionConfig.secret,
+      saveUninitialized: false,
+      resave: false,
+      cookie: { httpOnly: true, secure: false },
     }),
   );
 
