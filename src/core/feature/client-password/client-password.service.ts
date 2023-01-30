@@ -12,15 +12,10 @@ export class ClientPasswordService {
   /**
    * check recently changed password i.e. only 3 old password is checked with respect to new password
    */
-  private async checkRecentlyChangedPassword(
-    password: string,
-    userId: string,
-    remark: EPASSWORDREMARK,
-  ) {
+  private async checkRecentlyChangedPassword(password: string, userId: string) {
     return await this.clientPasswordRepository.checkRecentlyChangedPassword(
       password,
       userId,
-      remark,
     );
   }
 
@@ -32,7 +27,6 @@ export class ClientPasswordService {
     const fetchPasswordStatus = await this.checkRecentlyChangedPassword(
       password,
       userId,
-      remark,
     );
     if (!fetchPasswordStatus)
       throw new RunTimeException(

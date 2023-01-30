@@ -83,6 +83,11 @@ export class UserProfileService {
       return {};
     data.password = hashedPassword(data.password);
     delete data.oldPassword;
+    await this.clientPasswordService.validatePassword(
+      data.password,
+      foundUser.id,
+      EPASSWORDREMARK.CHANGE_PASSWORD,
+    );
     await this.userProfileRepository.update(
       { id: foundUser.id, isActive: true, isDeleted: false },
       { password: data.password },
