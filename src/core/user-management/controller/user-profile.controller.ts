@@ -12,6 +12,8 @@ import {
 import { UserProfileService } from '../service/user-profile.service';
 import {
   CreateUserProfileDto,
+  DeactivateUserProfileDto,
+  DeactivateUserProfileOtpDto,
   ForgetPasswordDto,
   ForgetPasswordOtpDto,
   UpdateUserProfileDto,
@@ -70,10 +72,40 @@ export class UserProfileController {
   }
 
   @ResponseMessage('user profile', 'deactivate', HttpStatus.OK)
-  @Delete('/deactivate')
-  async deactivateUserProfile() {
-    return 'deactivate';
+  @Put('/deactivate')
+  async deactivateUserProfile(
+    @Body() body: DeactivateUserProfileDto,
+    @Req() req: Request,
+  ) {
+    return this.userProfileService.deactivateUserProfile(body, req.user['id']);
   }
+
+  @ResponseMessage('user profile', 'otpFordeactivate', HttpStatus.OK)
+  @Put('/deactivate/otp')
+  async otpFordeactivateUserProfile(
+    @Body() body: DeactivateUserProfileOtpDto,
+    @Req() req: Request,
+  ) {
+    return await this.userProfileService.otpFordeactivateUserProfile(
+      body.password,
+      req.user['id'],
+    );
+  }
+
+  // @ResponseMessage('user profile', 'activate', HttpStatus.OK)
+  // @Put('/activate')
+  // async activateUserProfile() {
+  //   return 'activate';
+  // }
+
+  // @ResponseMessage('user profile', 'otpForactivate', HttpStatus.OK)
+  // @Put('/activate/otp')
+  // async otpForactivateUserProfile(
+  //   @Body() body: ActivateUserProfileOtpDto,
+  //   @Req() req: Request,
+  // ) {
+  //   return 'activate';
+  // }
 
   @ResponseMessage('user profile', 'userProfileDeleted', HttpStatus.OK)
   @Delete('/delete')

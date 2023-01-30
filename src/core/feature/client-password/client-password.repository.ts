@@ -1,7 +1,6 @@
 import { EntityRepository } from 'typeorm';
 import { ClientPasswordEntity } from './client-password.entity';
 import { BaseRepository } from 'typeorm-transactional-cls-hooked';
-import { EPASSWORDREMARK } from './client-password.dto';
 
 @EntityRepository(ClientPasswordEntity)
 export class ClientPasswordRepository extends BaseRepository<ClientPasswordEntity> {

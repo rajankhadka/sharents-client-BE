@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { OtpRepository } from './otp.repository';
 import { EOTPTYPE } from './otp.dto';
 import { addMinutes } from 'src/utils/add-time.utils';
@@ -78,7 +78,7 @@ export class OtpService {
       .join('');
   }
 
-  async newOtpForForgetPassword(userId: string, type: EOTPTYPE) {
+  async newOtpGeneration(userId: string, type: EOTPTYPE) {
     const otpLength = 6;
     const newOtp = this.generateOtp(otpLength);
     const createdAt = new Date();

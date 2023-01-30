@@ -12,7 +12,6 @@ import { algorithm } from '../../../config/resource/constant.config';
 import { RefreshTokenRepository } from '../repository/refresh-token.repository';
 import { Transactional } from 'typeorm-transactional-cls-hooked';
 import { randomBytes } from 'crypto';
-import { RequestCannotPerform } from 'src/exception/request-cannot-perform.exception';
 @Injectable()
 export class AuthService {
   private accessTokenConfig: Record<string, string>;
