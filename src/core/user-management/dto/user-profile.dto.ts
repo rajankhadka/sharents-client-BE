@@ -1,5 +1,6 @@
 import {
   IsEmail,
+  IsEnum,
   IsNotEmpty,
   IsOptional,
   IsPhoneNumber,
@@ -8,6 +9,7 @@ import {
   MaxLength,
   MinLength,
 } from 'class-validator';
+import { EOTPTYPE } from 'src/core/feature/otp/otp.dto';
 import { IsValidRePassword } from 'src/decorator/check-repassword.decorator';
 
 export class CreateUserProfileDto {
@@ -119,10 +121,33 @@ export class UpdateUserProfilePasswordDto {
   rePassword: string;
 }
 
-export class ForgetPasswordDto {
+export class ForgetPasswordOtpDto {
   @IsString()
   @IsNotEmpty()
   @MaxLength(25)
   @MinLength(3)
   identifier: string;
+}
+
+export class ForgetPasswordDto {
+  @IsString()
+  @IsNotEmpty()
+  @MinLength(3)
+  @MaxLength(50)
+  identifier: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @MaxLength(16)
+  @MinLength(8)
+  @Matches(
+    /(?=^.{8,16}$)(?=.*\d+)(?=.*[!@#$%^&*]+)(?![.\n])(?=.*[A-Z]+)(?=.*[a-z]+).*$/,
+    { message: '1 upper case, 1 lower case, 1 special character, 1 digit' },
+  )
+  password: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @IsValidRePassword()
+  rePassword: string;
 }

@@ -13,6 +13,7 @@ import { UserProfileService } from '../service/user-profile.service';
 import {
   CreateUserProfileDto,
   ForgetPasswordDto,
+  ForgetPasswordOtpDto,
   UpdateUserProfileDto,
   UpdateUserProfilePasswordDto,
 } from '../dto/user-profile.dto';
@@ -81,6 +82,16 @@ export class UserProfileController {
   }
 
   /**
+   * forget password
+   */
+  @PublicRoute()
+  @ResponseMessage('user', 'userPofileForgetPassword', HttpStatus.OK)
+  @Post('/forget-password')
+  forgetPassword(@Body() body: ForgetPasswordDto) {
+    return this.userProfileService.forgetPassword(body);
+  }
+
+  /**
    * otp generation for forget password
    */
   @PublicRoute()
@@ -90,7 +101,7 @@ export class UserProfileController {
     HttpStatus.OK,
   )
   @Post('/forget-password/otp')
-  async otpForForgetPassword(@Body() body: ForgetPasswordDto) {
+  async otpForForgetPassword(@Body() body: ForgetPasswordOtpDto) {
     return this.userProfileService.otpForForgetPassword(body);
   }
 }

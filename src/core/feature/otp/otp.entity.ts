@@ -24,4 +24,7 @@ export class OtpEntity extends CommonEntity {
     nullable: false,
   })
   expireAt: Date;
+
+  @Column({ name: 'is_verify', type: 'boolean', default: false })
+  isVerify: boolean;
 }

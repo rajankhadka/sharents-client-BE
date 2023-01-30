@@ -7,6 +7,7 @@ import { UserProfileService } from './service/user-profile.service';
 import { UserProfilePictureService } from './service/user-profile-picture.service';
 import { UserProfilePictureRepository } from './repository/user-profile-picture.repository';
 import { OTPModule } from '../feature/otp/otp.module';
+import { ClientPasswordModule } from '../feature/client-password/client-password.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { OTPModule } from '../feature/otp/otp.module';
       UserProfilePictureRepository,
     ]),
     OTPModule,
+    ClientPasswordModule,
   ],
   controllers: [UserProfileController, UserProfilePictureController],
   providers: [UserProfileService, UserProfilePictureService],
