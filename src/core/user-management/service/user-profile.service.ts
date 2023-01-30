@@ -7,6 +7,7 @@ import {
 import {
   CreateUserProfileDto,
   ForgetPasswordDto,
+  ForgetPasswordOtpDto,
   UpdateUserProfileDto,
   UpdateUserProfilePasswordDto,
 } from '../dto/user-profile.dto';
@@ -14,12 +15,17 @@ import { IAccessTokenData } from 'src/common/interface/token-data.interface';
 import { readFile } from 'src/utils/file-ops-while-upload.utils';
 import { OtpService } from 'src/core/feature/otp/otp.service';
 import { EOTPTYPE } from 'src/core/feature/otp/otp.dto';
+import { ClientPasswordService } from 'src/core/feature/client-password/client-password.service';
+import { RunTimeException } from 'src/exception/run-time.exception';
+import { EPASSWORDREMARK } from 'src/core/feature/client-password/client-password.dto';
+import { Transactional } from 'typeorm-transactional-cls-hooked';
 
 @Injectable()
 export class UserProfileService {
   constructor(
     private readonly userProfileRepository: UserProfileRepository,
     private readonly otpService: OtpService,
+    private readonly clientPasswordService: ClientPasswordService,
   ) {}
   async register(data: CreateUserProfileDto) {
     delete data.rePassword;
@@ -124,7 +130,7 @@ export class UserProfileService {
     });
   }
 
-  async otpForForgetPassword(data: ForgetPasswordDto) {
+  async otpForForgetPassword(data: ForgetPasswordOtpDto) {
     const fetchUser =
       await this.userProfileRepository.getUserIdByEmailOrUsernameOrPhone(
         data.identifier,
@@ -135,5 +141,40 @@ export class UserProfileService {
       fetchUser.id,
       EOTPTYPE.FORGET_PASSWORD,
     );
+  }
+
+  @Transactional()
+  async forgetPassword(data: ForgetPasswordDto) {
+    const fetchUser =
+      await this.userProfileRepository.getUserIdByEmailOrUsernameOrPhone(
+        data.identifier,
+      );
+    if (!fetchUser)
+      throw new RunTimeException('client identifier doesnit match');
+
+    const getVerifiedOtp = await this.otpService.getVerifiedOtp(
+      fetchUser.id,
+      EOTPTYPE.FORGET_PASSWORD,
+    );
+
+    /**
+     * validate password with recently changed 3 password and saved the new password
+     */
+    data['password'] = hashedPassword(data.password);
+    await this.clientPasswordService.validatePassword(
+      data.password,
+      fetchUser.id,
+      EPASSWORDREMARK.FORGET_PASSWORD,
+    );
+
+    //password update
+    await this.userProfileRepository.update(
+      { id: fetchUser.id, isActive: true, isDeleted: false },
+      { password: data.password },
+    );
+
+    //changed otp status as deleted
+    await this.otpService.deleteOtp(getVerifiedOtp.otpId);
+    return {};
   }
 }

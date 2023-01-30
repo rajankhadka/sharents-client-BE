@@ -12,6 +12,7 @@ export const SuccessMessage = {
   updateProfilePicture: '%s updated successfully',
   userProfileForgetPasswordOtp:
     '%s otp for forget password generated successfully',
+  userPofileForgetPassword: '%s password reset successfully',
 };
 
 export const ErrorMessage = {

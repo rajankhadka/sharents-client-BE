@@ -1,8 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { OtpRepository } from './otp.repository';
 import { EOTPTYPE } from './otp.dto';
 import { addMinutes } from 'src/utils/add-time.utils';
 import { RunTimeException } from 'src/exception/run-time.exception';
+import { Transactional } from 'typeorm-transactional-cls-hooked';
 
 @Injectable()
 export class OtpService {
@@ -92,6 +93,7 @@ export class OtpService {
     return { otp: newOtp, createdAt, expireAt, length: otpLength };
   }
 
+  @Transactional()
   async verifyOtp(identifier: string, type: EOTPTYPE, otp: string) {
     const fetchOtp = await this.otpRepository.verifyOtp(
       identifier,
@@ -102,8 +104,31 @@ export class OtpService {
     if (!fetchOtp) throw new RunTimeException('otp mismatch');
     await this.otpRepository.update(
       { id: fetchOtp.otpId },
-      { isActive: false, isDeleted: false },
+      { isActive: false, isDeleted: false, isVerify: true },
     );
     return { otpMatch: true };
+  }
+
+  async getVerifiedOtp(userId: string, type: EOTPTYPE) {
+    const fetchVerifiedOtp = await this.otpRepository.getVerifiedOtp(
+      userId,
+      type,
+    );
+    if (!fetchVerifiedOtp)
+      throw new RunTimeException(
+        'otp verification failed, use latest otp that has been sent!',
+      );
+    return fetchVerifiedOtp;
+  }
+
+  /**
+   * changed otp status to deleted as true because its already used
+   */
+  async deleteOtp(otpId: string) {
+    await this.otpRepository.update(
+      { id: otpId },
+      { isActive: false, isDeleted: true },
+    );
+    return {};
   }
 }
