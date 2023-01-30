@@ -6,6 +6,7 @@ export const SuccessMessage = {
   updatePassword: '%s password updated successfully',
   updateUserProfile: '%s updated successfully',
   deactivate: '%s deactivated successfully',
+  activate: '%s activated successfully',
   remove: '%s removed successfully',
   userProfileDeleted: '%s deleted successfully',
   uploadProfile: '%s uploaded successfully',
@@ -13,6 +14,8 @@ export const SuccessMessage = {
   userProfileForgetPasswordOtp:
     '%s otp for forget password generated successfully',
   userPofileForgetPassword: '%s password reset successfully',
+  otpFordeactivate: '%s otp for deactivate account generated successfully',
+  otpForactivate: '%s otp for activate account generated successfully',
 };
 
 export const ErrorMessage = {

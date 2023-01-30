@@ -5,11 +5,10 @@ import {
   HttpStatus,
   Post,
   Req,
-  Res,
   UseGuards,
 } from '@nestjs/common';
 import { LocalAuthGuard } from 'src/guard/local-auth.guard';
-import { Request, Response } from 'express';
+import { Request } from 'express';
 import { AuthService } from '../service/auth.service';
 import { PublicRoute } from 'src/decorator/public-route.decorator';
 import { RefreshTokenRoute } from 'src/decorator/refresh-token-route.decorator';

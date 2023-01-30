@@ -1,6 +1,5 @@
 import {
   IsEmail,
-  IsEnum,
   IsNotEmpty,
   IsOptional,
   IsPhoneNumber,
@@ -9,7 +8,6 @@ import {
   MaxLength,
   MinLength,
 } from 'class-validator';
-import { EOTPTYPE } from 'src/core/feature/otp/otp.dto';
 import { IsValidRePassword } from 'src/decorator/check-repassword.decorator';
 
 export class CreateUserProfileDto {
@@ -150,4 +148,27 @@ export class ForgetPasswordDto {
   @IsNotEmpty()
   @IsValidRePassword()
   rePassword: string;
+}
+
+export class DeactivateUserProfileOtpDto {
+  @IsString()
+  @IsNotEmpty()
+  password: string;
+}
+
+export class DeactivateUserProfileDto {
+  @IsString()
+  @IsNotEmpty()
+  password: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @IsValidRePassword()
+  rePassword: string;
+}
+
+export class ActivateUserProfileOtpDto {
+  @IsString()
+  @IsNotEmpty()
+  password: string;
 }

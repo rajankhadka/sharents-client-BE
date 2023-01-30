@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { ClientPasswordRepository } from './client-password.repository';
-import { EOTPTYPE } from '../otp/otp.dto';
 import { EPASSWORDREMARK } from './client-password.dto';
 import { RunTimeException } from 'src/exception/run-time.exception';
 

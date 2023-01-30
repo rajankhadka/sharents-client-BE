@@ -6,6 +6,7 @@ import {
 } from 'src/utils/password-hashing.utils';
 import {
   CreateUserProfileDto,
+  DeactivateUserProfileDto,
   ForgetPasswordDto,
   ForgetPasswordOtpDto,
   UpdateUserProfileDto,
@@ -96,11 +97,48 @@ export class UserProfileService {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function
-  async deactivateUserProfile() {}
+  async deactivateUserProfile(data: DeactivateUserProfileDto, userId: string) {
+    const isVerifiedUser = await this.userProfileRepository.findOne({
+      where: { id: userId, isActive: true, isDeleted: false },
+      select: ['id', 'email', 'password'],
+    });
+    if (!isVerifiedUser) throw new UnauthorizedException();
+    if (!validateHashedPassword(data.password, isVerifiedUser.password))
+      throw new UnauthorizedException();
+    const getVerifiedOtp = await this.otpService.getVerifiedOtp(
+      userId,
+      EOTPTYPE.DEACTIVATEUSERPROFILE,
+    );
+    //deactivate user profile
+    await this.userProfileRepository.update(
+      { id: userId, isActive: true, isDeleted: false },
+      { isActive: false },
+    );
+    await this.otpService.deleteOtp(getVerifiedOtp.otpId);
+    return {};
+  }
+
+  async fetchUserProfileByUserId(userId: string) {
+    return await this.userProfileRepository.findOne({
+      id: userId,
+      isActive: true,
+      isDeleted: false,
+    });
+  }
+
+  async otpFordeactivateUserProfile(password: string, userId: string) {
+    const fetchUserId = await this.fetchUserProfileByUserId(userId);
+    if (!fetchUserId) throw new UnauthorizedException();
+    return this.otpService.newOtpGeneration(
+      userId,
+      EOTPTYPE.DEACTIVATEUSERPROFILE,
+    );
+  }
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   async deleteUserProfile() {}
 
+  @Transactional()
   async validateClient(identifier: string, password: string) {
     const fetchClient =
       await this.userProfileRepository.validateUserCredentials(identifier);
@@ -110,6 +148,11 @@ export class UserProfileService {
       fetchClient.password,
     );
     if (!verifyPassword) return null;
+    if (!fetchClient.isActive)
+      await this.userProfileRepository.update(
+        { id: fetchClient.id, email: fetchClient.email },
+        { isActive: true },
+      );
     delete fetchClient.password;
     return fetchClient;
   }
@@ -142,7 +185,7 @@ export class UserProfileService {
       );
     if (!fetchUser) throw new UnauthorizedException();
 
-    return await this.otpService.newOtpForForgetPassword(
+    return await this.otpService.newOtpGeneration(
       fetchUser.id,
       EOTPTYPE.FORGET_PASSWORD,
     );
@@ -155,7 +198,7 @@ export class UserProfileService {
         data.identifier,
       );
     if (!fetchUser)
-      throw new RunTimeException('client identifier doesnit match');
+      throw new RunTimeException('client identifier doesnot match');
 
     const getVerifiedOtp = await this.otpService.getVerifiedOtp(
       fetchUser.id,

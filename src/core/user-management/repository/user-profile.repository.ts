@@ -40,10 +40,11 @@ export class UserProfileRepository extends BaseRepository<UserProfileEntity> {
   async validateUserCredentials(identifier: string) {
     const fetchData = await this.query(
       `
-        select email, id, password
+        select email, id, password, is_active as "isActive"
         from sh_client_user_profile
         where (user_name =  $1 or email = $1 or phone_number = $1) 
-          and is_active is true and is_deleted is false;
+          and is_deleted is false
+        limit 1;
       `,
       [identifier.toLowerCase()],
     );
