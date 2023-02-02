@@ -5,7 +5,6 @@ import {
   HttpStatus,
   Post,
   Req,
-  Session,
   UseGuards,
 } from '@nestjs/common';
 import { LocalAuthGuard } from 'src/guard/local-auth.guard';
@@ -16,7 +15,6 @@ import { RefreshTokenRoute } from 'src/decorator/refresh-token-route.decorator';
 import { LoginDto } from '../dto/auth.dto';
 import { ApiTagsAndBearer } from 'src/decorator/api-tags-and-bearer.decorator';
 import { ResponseMessage } from 'src/decorator/response.decorator';
-import { Session as ISession } from 'express-session';
 
 @ApiTagsAndBearer('Authentication')
 @Controller('/auth')

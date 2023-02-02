@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { ITokenPayload } from '../interface/auth.interface';
 import { algorithm } from 'src/config/resource/constant.config';
 import * as jwt from 'jsonwebtoken';
 import { UserProfileService } from 'src/core/user-management/service/user-profile.service';

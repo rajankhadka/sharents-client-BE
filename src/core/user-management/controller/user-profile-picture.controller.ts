@@ -8,7 +8,6 @@ import {
   Req,
   UploadedFile,
   UseInterceptors,
-  Header,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiTagsAndBearer } from 'src/decorator/api-tags-and-bearer.decorator';
