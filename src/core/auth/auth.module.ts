@@ -8,6 +8,8 @@ import { LocalStrategy } from './strategy/local.strategy';
 import { PassportModule } from '@nestjs/passport';
 import { AccessTokenStrategy } from './strategy/access-token.strategy';
 import { RefreshTokenStrategy } from './strategy/refresh-token.strategy';
+import { SessionStorageService } from './service/session-storage.service';
+import { SessionStorageRepository } from './repository/session-storage.repository';
 @Module({
   imports: [
     TypeOrmModule.forFeature([RefreshTokenRepository]),

@@ -25,9 +25,12 @@ export class AuthGuard implements CanActivate {
       IS_PUBLIC_ROUTE,
       [context.getHandler(), context.getClass()],
     );
+    const request = context.switchToHttp().getRequest<Request>();
     if (isPublic) return true;
 
-    const request = context.switchToHttp().getRequest<Request>();
+    // console.log(request.session);
+    // console.log(request.session.id);
+    // console.log(request.session['userId']);
     const header = request.headers.authorization;
     if (!header?.length) throw new UnauthorizedException();
     //check for refresh token route
@@ -36,7 +39,7 @@ export class AuthGuard implements CanActivate {
       [context.getHandler(), context.getClass()],
     );
     if (isRefreshTokenRoute) {
-      console.log('===================start===========');
+      console.log('====================start===========');
       const payload = await this.refreshTokenValidate(header);
       if (!payload) throw new RequestCannotPerform('request cannot be perform');
       //set refresh token payload;
