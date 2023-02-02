@@ -8,7 +8,7 @@ export interface ITokenPayload {
   sub: string;
   iat?: Date;
   exp?: Date;
-  identification: string,
+  identification: string;
 }
 
 export interface IRefreshTokenPayload {

@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { SessionStorageRepository } from '../repository/session-storage.repository';
 import { Session } from 'express-session';
-import { UserProfileService } from 'src/core/user-management/service/user-profile.service';
 
 @Injectable()
 export class SessionStorageService {
@@ -24,6 +23,4 @@ export class SessionStorageService {
     });
     return true;
   }
-
-  async validateSession(time: Date, userId: string, session: Session) {}
 }
