@@ -38,17 +38,13 @@ export class AuthService {
   }
 
   async login(user: IAuthUser) {
+    const identification = randomBytes(32).toString('hex');
     const payload: ITokenPayload = {
       identifier: user.identifier,
       sub: user.id,
+      identification,
     };
-
-    // await this.refreshTokenRepository.delete({
-    //   userId: user.id,
-    //   isActive: true,
-    // });
     //generate new identification token
-    const identification = randomBytes(32).toString('hex');
     return {
       accessToken: await this.accessTokenSign(payload),
       refreshToken: await this.refreshTokenSign({
@@ -128,6 +124,7 @@ export class AuthService {
     const accessToken = await this.accessTokenSign({
       identifier: activeUser.email,
       sub: activeUser.id,
+      identification: data.identification,
     });
     console.log('==============end============');
     return {

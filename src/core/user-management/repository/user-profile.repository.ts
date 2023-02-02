@@ -65,4 +65,54 @@ export class UserProfileRepository extends BaseRepository<UserProfileEntity> {
     );
     return fetchData.length ? fetchData[0] : null;
   }
+
+  async validateAccessToken(id: string, email: string, identification: string) {
+    const fetchUser = await this.query(
+      `
+        select profile.email as "email", profile.id as "id"
+        from sh_client_refresh_token token
+        inner join sh_client_user_profile profile
+            on token.user_id = profile.id
+        where identification = $3 and
+              profile.id = $1 and profile.email = $2 and profile.is_deleted is false and profile.is_active is true and
+              token.is_active is true and token.is_deleted is false;
+      `,
+      [id, email, identification],
+    );
+    return fetchUser.length ? fetchUser[0] : null;
+  }
+
+  async deleteIdentificationAfterPasswordChanged(id: string, email: string) {
+    await this.query(
+      `
+        delete from sh_client_refresh_token token
+        where user_id = (
+            select id
+            from sh_client_user_profile profile
+            where email = $2 and id = $1 and
+                  profile.is_active is true and profile.is_deleted is false
+            limit 1
+        );
+      `,
+      [id, email],
+    );
+    return true;
+  }
+
+  async deleteIdentificationAfterPasswordReset(identifier: string) {
+    await this.query(
+      `
+        delete from sh_client_refresh_token token
+        where user_id = (
+          select id
+          from sh_client_user_profile profile
+          where (profile.email = $1 or profile.phone_number = $1 or profile.user_name = $1 )and
+                profile.is_active is true and profile.is_deleted is false
+          limit 1
+        );
+      `,
+      [identifier],
+    );
+    return true;
+  }
 }

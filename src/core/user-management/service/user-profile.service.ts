@@ -73,6 +73,7 @@ export class UserProfileService {
     return {};
   }
 
+  @Transactional()
   async updatePassword(
     data: UpdateUserProfilePasswordDto,
     user: IAccessTokenData,
@@ -92,6 +93,10 @@ export class UserProfileService {
     await this.userProfileRepository.update(
       { id: foundUser.id, isActive: true, isDeleted: false },
       { password: data.password },
+    );
+    await this.userProfileRepository.deleteIdentificationAfterPasswordChanged(
+      user.id,
+      user.email,
     );
     return {};
   }
@@ -157,11 +162,12 @@ export class UserProfileService {
     return fetchClient;
   }
 
-  async validateAccessToken(id: string, email: string) {
-    return await this.userProfileRepository.findOne({
-      where: { id, email, isActive: true, isDeleted: false },
-      select: ['email', 'id'],
-    });
+  async validateAccessToken(id: string, email: string, identification: string) {
+    return await this.userProfileRepository.validateAccessToken(
+      id,
+      email,
+      identification,
+    );
   }
 
   async validateRefreshTokenUser(id: string) {
@@ -223,6 +229,10 @@ export class UserProfileService {
 
     //changed otp status as deleted
     await this.otpService.deleteOtp(getVerifiedOtp.otpId);
+    //in validate identification token
+    await this.userProfileRepository.deleteIdentificationAfterPasswordReset(
+      data.identifier,
+    );
     return {};
   }
 }

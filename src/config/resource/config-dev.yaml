@@ -14,6 +14,8 @@ db:
     logging: true
 
 client:
+  session:
+    secret: f415bd3f8d8f3e12e5be58373011220c588da6076cbefc73d3e1fa3bfbb3bacf
   password:
     randomByte: 16
     iteration: 1000

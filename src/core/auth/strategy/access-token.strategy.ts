@@ -29,6 +29,7 @@ export class AccessTokenStrategy {
     const validatePayload = await this.userProfileService.validateAccessToken(
       payload['sub'].toString(),
       payload['identifier'].toString(),
+      payload['identification'].toString(),
     );
     if (!validatePayload) return null;
     return validatePayload;

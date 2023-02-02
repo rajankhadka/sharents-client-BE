@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 /* eslint-disable prettier/prettier */
-// const { randomBytes, randomUUID } = require('crypto');
+const { randomBytes, randomUUID } = require('crypto');
 
-// console.log(`${randomBytes(32).toString('hex')}-${Date.now()}`);
+console.log(`${randomBytes(32).toString('hex')}`);
 // console.log(randomUUID())
 
 // const length = 10;
@@ -82,13 +82,13 @@
 // console.log(m1)
 // console.log(m2);
 
-function addMinutes(date, minutes) {
-  date.setMinutes(date.getMinutes() + minutes);
-  return date;
-}
+// function addMinutes(date, minutes) {
+//   date.setMinutes(date.getMinutes() + minutes);
+//   return date;
+// }
 
-const d1 = new Date();
-let d2 = addMinutes(new Date(d1), 5);
-console.log(d1); // 👉️ 2024-03-14T10:08:03.000Z
-console.log(d2);
-// console.log(d1);
+// const d1 = new Date();
+// let d2 = addMinutes(new Date(d1), 5);
+// console.log(d1); // 👉️ 2024-03-14T10:08:03.000Z
+// console.log(d2);
+// // console.log(d1);
