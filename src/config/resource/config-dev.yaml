@@ -38,10 +38,17 @@ queue:
     rabbitmqPass: sharents
     rabbitmqVhost: client
     rabbitmqPort: 5672
-    rabbitmqHost: 192.168.0.2
+    rabbitmqHost: 192.168.96.2
     # rabbitmqExchange: client-exchange
     # rabbitmqRoute:
     #   mail: mail-route
     #   phone: phone-route
 
+digitalSignature:
+  hashing:
+    randomByte: 16
+    iteration: 1000
+    keyLen: 64
+    digest: sha512
+    secret: fb0ec46fbf49042d596774f7f7722867a6fc3a06bb177813d0ce6daf4826c2f9
 

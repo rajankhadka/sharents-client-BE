@@ -22,11 +22,11 @@ export class AppController {
   @PublicRoute()
   @Post()
   async getHello(@Session() session: Sess) {
-    // await this.rabbitmq.publishMessage(
-    //   'client-exchange',
-    //   RABBITMQROUTE.MAILROUTE,
-    //   Buffer.from(JSON.stringify({route: 'mail-route', payload: "this is new mail"})),
-    // );
+    await this.rabbitmq.publishMessage(
+      'client-exchange',
+      RABBITMQROUTE.MAILROUTE,
+      Buffer.from(JSON.stringify({route: 'mail-route', payload: "this is new mail"})),
+    );
    
     return this.appService.getHello();
     // return { id: session['sessionId'], data: session['name'] };
