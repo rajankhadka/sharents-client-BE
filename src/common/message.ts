@@ -16,6 +16,7 @@ export const SuccessMessage = {
   userPofileForgetPassword: '%s password reset successfully',
   otpFordeactivate: '%s otp for deactivate account generated successfully',
   otpForactivate: '%s otp for activate account generated successfully',
+  logout: '%s successfully',
 };
 
 export const ErrorMessage = {

@@ -54,6 +54,14 @@ export class AuthService {
     };
   }
 
+  async logout(user: IAuthUser) {
+    await this.refreshTokenRepository.delete({
+      userId: user.id,
+      identification: user.identification,
+    });
+    return {};
+  }
+
   async accessTokenSign(payload: ITokenPayload) {
     return jwt.sign(payload, this.accessTokenConfig.secretKey, {
       algorithm,

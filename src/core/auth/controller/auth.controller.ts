@@ -41,4 +41,14 @@ export class AuthController {
       identification: req.user['identification'].toString(),
     });
   }
+
+  @ResponseMessage('logout', 'logout', HttpStatus.OK)
+  @Get('/log-out')
+  logout(@Req() req: Request) {
+    return this.authService.logout({
+      id: req.user['id'],
+      identifier: req.user['identifier'],
+      identification: req.user['identification'],
+    });
+  }
 }

@@ -1,6 +1,7 @@
 export interface IAuthUser {
   identifier: string;
   id: string;
+  identification?: string;
 }
 
 export interface ITokenPayload {
