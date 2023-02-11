@@ -8,6 +8,6 @@ COPY . .
 
 RUN npm i
 
-RUN npm run build
+# RUN npm run build
 
-ENTRYPOINT [ "npm", "run", "start:prod" ]
+ENTRYPOINT [ "npm", "run", "start:local" ]

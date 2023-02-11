@@ -4,6 +4,6 @@ import { DigitalSignatureService } from './digital-signature.service';
 @Module({
   imports: [],
   providers: [DigitalSignatureService],
-  exports: [],
+  exports: [DigitalSignatureService],
 })
 export class DigitalSignatureModule {}

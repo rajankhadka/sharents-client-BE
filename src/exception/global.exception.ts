@@ -28,6 +28,7 @@ interface IErrorResponse {
 export class GlobalExceptionFilter implements ExceptionFilter {
   constructor(private readonly httpAdapter: HttpAdapterHost) {}
   catch(exception: any, host: ArgumentsHost) {
+    console.log(exception);
     const { httpAdapter } = this.httpAdapter;
     const ctx = host.switchToHttp();
 
@@ -74,6 +75,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
       responseBody['message'] = exception.getResponse().toString();
       responseBody['error'] = exception.name;
     } else {
+      responseBody['data'] = exception?.message || null;
       responseBody['message'] = 'Internal server error';
       responseBody['error'] = 'InternalServerError';
     }
