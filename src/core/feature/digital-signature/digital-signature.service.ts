@@ -14,7 +14,7 @@ export class DigitalSignatureService {
     >('digitalSignature.hashing');
   }
 
-  private generateHashed(data: string): Buffer {
+  private async generateHashed(data: string): Promise<Buffer> {
     return Buffer.from(
       pbkdf2Sync(
         data,
@@ -34,25 +34,18 @@ export class DigitalSignatureService {
     const privateKeyShClient = path.join(
       process.cwd(),
       'key-pair',
-      'client-be-key',
-      'sharents-client-app-private.pem',
+      'digital-signature-key',
+      'client-be-private.pem',
     );
     if (!fs.existsSync(privateKeyShClient))
       throw new RunTimeException('file not found');
     const privateKeyShClientBuffer = Buffer.from(
       fs.readFileSync(privateKeyShClient, { encoding: 'utf-8' }),
     );
-    // const privateKeyShClientBuffer = sshpk.parseKey(
-    //   fs.readFileSync(privateKeyShClient, { encoding: 'utf-8' }),
-    //   'openssh',
-    // );
-    // const privateKeyShClientBuffer1 =
-    //   privateKeyShClientBuffer.toBuffer('pkcs8');
     const cypherData = privateEncrypt(
       {
         key: privateKeyShClientBuffer,
-        padding: constants.RSA_NO_PADDING,
-        oaepHash: 'sha256',
+        padding: constants.RSA_PKCS1_PADDING,
       },
       data,
     );
@@ -64,19 +57,17 @@ export class DigitalSignatureService {
    * to ensure authenticity and integrity
    */
   private generateDigitalSignature(
-    message: any,
+    message: string,
     encrypteHashedSign: string,
-  ): Buffer {
-    return Buffer.from(
-      JSON.stringify({ message: message, signature: encrypteHashedSign }),
-    );
+  ) {
+    return Buffer.from(message + '.' + encrypteHashedSign);
   }
 
   /**
    * generation of encrypted digital signature
    * to ensure confidencatiality
    */
-  private async encryptDigitalSignature(data: Buffer): Promise<string> {
+  private async encryptMessage(data: Buffer): Promise<string> {
     const publicKeyFilePath = path.join(
       process.cwd(),
       'key-pair',
@@ -99,20 +90,23 @@ export class DigitalSignatureService {
     return cypherData.toString('base64');
   }
 
-  public async digitalSignature(data: any) {
+  public async digitalSignature(data: string) {
+    //change to buffer
+    const bufferData = Buffer.from(data);
     //hashed sign of original data
-    const hashedSign = this.generateHashed(JSON.stringify(data));
+    const hashedSign = await this.generateHashed(data);
 
     //encrypted hashed sign
     const encryptedHashedSign = await this.encrypteHashedData(hashedSign);
 
+    //genrate encrypted digital signature
+    const encryptedMessage = await this.encryptMessage(bufferData);
+
     //generate digital signature
-    const digitalSignature = this.generateDigitalSignature(
-      data,
+    const send = this.generateDigitalSignature(
+      encryptedMessage,
       encryptedHashedSign,
     );
-
-    //genrate encrypted digital signature
-    return await this.encryptDigitalSignature(digitalSignature);
+    return send;
   }
 }

@@ -38,7 +38,7 @@ queue:
     rabbitmqPass: sharents
     rabbitmqVhost: client
     rabbitmqPort: 5672
-    rabbitmqHost: 172.20.0.3
+    rabbitmqHost: 192.168.96.2
     # rabbitmqExchange: client-exchange
     # rabbitmqRoute:
     #   mail: mail-route

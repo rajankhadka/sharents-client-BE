@@ -6,12 +6,15 @@ import {
   RABBITMQEXCHANGE,
   RABBITMQROUTE,
 } from 'src/common/interface/rabbimq.interface';
-import { messageEncryption } from 'src/utils/message-encryption.utils';
+import { DigitalSignatureService } from 'src/core/feature/digital-signature/digital-signature.service';
 
 @Injectable()
 export class RabbitmqService {
   private readonly rabbitmqConfig: Record<string, any>;
-  constructor(private readonly configService: ConfigService) {
+  constructor(
+    private readonly configService: ConfigService,
+    private readonly digitalSignatureService: DigitalSignatureService,
+  ) {
     this.rabbitmqConfig =
       this.configService.get<Record<string, any>>('queue.rabbitmq');
   }
@@ -36,11 +39,12 @@ export class RabbitmqService {
   public async publishMessage(
     exchange: RABBITMQEXCHANGE,
     routingKey: RABBITMQROUTE,
-    msg: Buffer,
+    msg: string,
   ) {
     const { channel, connection } = await this.setup();
-    const data = messageEncryption(msg);
-    await Promise.all([channel.publish(exchange, routingKey, data)]);
+    // const data = messageEncryption(msg);
+    const message = await this.digitalSignatureService.digitalSignature(msg);
+    await Promise.all([channel.publish(exchange, routingKey, message)]);
     await channel.close();
     await connection.close();
   }

@@ -27,7 +27,7 @@ export class AppController {
     await this.rabbitmq.publishMessage(
       'client-exchange',
       RABBITMQROUTE.MAILROUTE,
-      Buffer.from(JSON.stringify({route: 'mail-route', payload: "this is new mail"})),
+      JSON.stringify({route: 'mail-route', payload: "this is new mail"}),
     );
    
     return this.appService.getHello();
@@ -37,6 +37,6 @@ export class AppController {
   @PublicRoute()
   @Get()
   async getHello1() {  
-    return this.digitalSignature.digitalSignature({name: "rajan"});
+    return this.digitalSignature.digitalSignature(JSON.stringify({name: "rajan"}));
   }
 }
