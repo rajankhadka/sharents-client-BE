@@ -26,3 +26,8 @@ export const ErrorMessage = {
   NotFoundException: 'Client request cannot be found',
   PayloadTooLargeException: 'Uploaded file size exceed',
 };
+
+export enum E_MAIL_TYPE {
+  FORGET_PASSWORD = 'forget_password',
+  ACCOUNT_CREATED = 'account_created',
+}

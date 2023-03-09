@@ -10,7 +10,7 @@ import { RABBITMQROUTE } from './common/interface/rabbimq.interface';
 import { ForgetPasswordDto } from './core/user-management/dto/user-profile.dto';
 import { Session as Sess} from 'express-session';
 import { addMinutes } from './utils/add-time.utils';
-import { DigitalSignatureService } from './core/feature/digital-signature/digital-signature.service';
+// import { DigitalSignatureService } from './core/feature/digital-signature/digital-signature.service';
 
 @Controller()
 export class AppController {
@@ -18,7 +18,7 @@ export class AppController {
     private readonly appService: AppService,
     private readonly authService: AuthService,
     private readonly rabbitmq: RabbitmqService,
-    private readonly digitalSignature: DigitalSignatureService,
+    // private readonly digitalSignature: DigitalSignatureService,
   ) {}
 
   @PublicRoute()
@@ -37,6 +37,7 @@ export class AppController {
   @PublicRoute()
   @Get()
   async getHello1() {  
-    return this.digitalSignature.digitalSignature(JSON.stringify({name: "rajan"}));
+    return '';
+    // return this.digitalSignature.digitalSignature(JSON.stringify({name: "rajan"}));
   }
 }

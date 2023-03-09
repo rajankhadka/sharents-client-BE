@@ -54,7 +54,8 @@ export class UserProfileRepository extends BaseRepository<UserProfileEntity> {
   async getUserIdByEmailOrUsernameOrPhone(identifier: string) {
     const fetchData = await this.query(
       `
-        select id from sh_client_user_profile
+        select id, user_name as "userName", email 
+        from sh_client_user_profile
         where user_name = $1 or 
               email = $1 or 
               phone_number = $1 and
@@ -114,5 +115,17 @@ export class UserProfileRepository extends BaseRepository<UserProfileEntity> {
       [identifier],
     );
     return true;
+  }
+
+  async fetchEmailAndUserNameUsingIdentifier(identifier: string) {
+    const resData = await this.query(
+      `
+        select email
+        from sh_client_user_profile
+        where user_name = $1 or phone_number = $1 or email = $1
+      `,
+      [identifier],
+    );
+    return resData.length ? resData[0] : null;
   }
 }

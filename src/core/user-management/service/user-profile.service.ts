@@ -20,10 +20,14 @@ import { ClientPasswordService } from 'src/core/feature/client-password/client-p
 import { RunTimeException } from 'src/exception/run-time.exception';
 import { EPASSWORDREMARK } from 'src/core/feature/client-password/client-password.dto';
 import { Transactional } from 'typeorm-transactional-cls-hooked';
+import { RabbitmqService } from 'src/lib/rabbitmq.service';
+import { RABBITMQROUTE } from 'src/common/interface/rabbimq.interface';
+import { E_MAIL_TYPE } from 'src/common/message';
 
 @Injectable()
 export class UserProfileService {
   constructor(
+    private readonly rabbitMqService: RabbitmqService,
     private readonly userProfileRepository: UserProfileRepository,
     private readonly otpService: OtpService,
     private readonly clientPasswordService: ClientPasswordService,
@@ -32,6 +36,18 @@ export class UserProfileService {
     delete data.rePassword;
     data.password = hashedPassword(data.password);
     await this.userProfileRepository.save(data);
+    this.rabbitMqService.publishMessage(
+      'client-exchange',
+      RABBITMQROUTE.MAILROUTE,
+      JSON.stringify({
+        route: RABBITMQROUTE.MAILROUTE,
+        payload: {
+          username: data.userName,
+          email: data.email,
+          type: E_MAIL_TYPE.ACCOUNT_CREATED,
+        },
+      }),
+    );
     return {};
   }
 
@@ -233,6 +249,24 @@ export class UserProfileService {
     await this.userProfileRepository.deleteIdentificationAfterPasswordReset(
       data.identifier,
     );
+    this.rabbitMqService.publishMessage(
+      'client-exchange',
+      RABBITMQROUTE.MAILROUTE,
+      JSON.stringify({
+        route: RABBITMQROUTE.MAILROUTE,
+        payload: {
+          username: fetchUser['userName'],
+          email: fetchUser['email'],
+          type: E_MAIL_TYPE.FORGET_PASSWORD,
+        },
+      }),
+    );
     return {};
+  }
+
+  async fetchEmailAndUserNameUsingIdentifier(identifier: string) {
+    return await this.userProfileRepository.fetchEmailAndUserNameUsingIdentifier(
+      identifier,
+    );
   }
 }
