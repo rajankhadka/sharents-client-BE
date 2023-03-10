@@ -3,6 +3,7 @@ import {
   ExceptionFilter,
   ArgumentsHost,
   HttpStatus,
+  Logger,
 } from '@nestjs/common';
 import { HttpAdapterHost } from '@nestjs/core';
 import { JsonWebTokenError, TokenExpiredError } from 'jsonwebtoken';
@@ -26,12 +27,19 @@ interface IErrorResponse {
 }
 @Catch()
 export class GlobalExceptionFilter implements ExceptionFilter {
-  constructor(private readonly httpAdapter: HttpAdapterHost) {}
+  constructor(
+    private readonly httpAdapter: HttpAdapterHost,
+    private readonly logger: Logger,
+  ) {}
   catch(exception: any, host: ArgumentsHost) {
-    console.log(exception);
     const { httpAdapter } = this.httpAdapter;
     const ctx = host.switchToHttp();
-
+    this.logger.error(
+      exception.name,
+      exception.stack,
+      GlobalExceptionFilter.name,
+    );
+    console.log(exception.stack);
     const responseBody = {
       data: null,
       success: false,

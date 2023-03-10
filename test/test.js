@@ -1,16 +1,10 @@
-const crypto = require('crypto');
-const { publicKey, privateKey } = crypto.generateKeyPairSync('rsa', {
-  // The standard secure default length for RSA keys is 2048 bits
-  modulusLength: 2048,
-});
+const fs = require('fs');
+const date = new Date();
 
-const message = crypto.privateEncrypt(
-  {
-    key: privateKey,
-    padding: crypto.constants.RSA_PKCS1_PADDING,
-  },
-  // We convert the data string to a buffer
-  Buffer.from('plainText'),
-);
+console.log(date);
+console.log(date.getFullYear());
+console.log(date.getDate());
+console.log(date.getMonth() + 1);
 
-console.log(message.toString('base64'));
+
+fs.openSync('open.txt', 'w');

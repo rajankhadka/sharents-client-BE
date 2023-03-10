@@ -5,6 +5,7 @@ import { ISearchParams } from 'src/common/interface/search-param.interface';
 import { ConfigurationModule } from 'src/config/configuration.module';
 import { GlobalTypeormSubscriber } from 'src/db/subscriber/global-typeorm.subscriber';
 import { importAllFilesFromFolder } from 'src/utils/read-all-module.utils';
+import { TypeOrmLogger } from './typeorm-logger.lib';
 @Module({
   imports: [
     TypeOrmModule.forRootAsync({
@@ -25,6 +26,7 @@ import { importAllFilesFromFolder } from 'src/utils/read-all-module.utils';
           synchronize: Boolean(primaryDataSource.synchronize),
           logging: Boolean(primaryDataSource.logging),
           subscribers: [],
+          logger: new TypeOrmLogger(),
         };
       },
     }),

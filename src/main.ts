@@ -10,9 +10,15 @@ import configuration from './config/configutaion';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import * as cors from 'cors';
 import * as session from 'express-session';
+import { WinstonModule } from 'nest-winston';
+import { winstonLoggerUtils } from './utils/logger';
+import * as winston from 'winston';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const logger = winston.createLogger(winstonLoggerUtils);
+  const app = await NestFactory.create(AppModule, {
+    logger: WinstonModule.createLogger(logger),
+  });
   const configService = new ConfigService(configuration());
   const config = configService.get<Record<string, any>>('http');
   const sessionConfig =
@@ -62,7 +68,7 @@ async function bootstrap() {
   SwaggerModule.setup('/v0/docs', app, document);
 
   await app.listen(config.port, () => {
-    console.log('Application running on %s:%d 🚀', config.host, config.port);
+    logger.info(`Application running on ${config.host}:${config.port} 🚀`);
   });
 }
 bootstrap();

@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { Body, Controller, Get, Post, Req, Res, Session } from '@nestjs/common';
+import { Body, Controller, Get, Logger, Post, Req, Res, Session } from '@nestjs/common';
 import { AppService } from './app.service';
 import { AuthService } from './core/auth/service/auth.service';
 import { Request, Response } from 'express';
@@ -19,17 +19,19 @@ export class AppController {
     private readonly authService: AuthService,
     private readonly rabbitmq: RabbitmqService,
     // private readonly digitalSignature: DigitalSignatureService,
+    private readonly logger: Logger,
   ) {}
 
   @PublicRoute()
   @Post()
   async getHello(@Session() session: Sess) {
-    await this.rabbitmq.publishMessage(
-      'client-exchange',
-      RABBITMQROUTE.MAILROUTE,
-      JSON.stringify({route: 'mail-route', payload: "this is new mail"}),
-    );
-   
+    // await this.rabbitmq.publishMessage(
+    //   'client-exchange',
+    //   RABBITMQROUTE.MAILROUTE,
+    //   JSON.stringify({route: 'mail-route', payload: "this is new mail"}),
+    // );
+    throw new RunTimeException('messahe');
+    this.logger.log('message', AppController.name);
     return this.appService.getHello();
     // return { id: session['sessionId'], data: session['name'] };
   }
